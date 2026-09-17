@@ -1,30 +1,40 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-import 'package:duolingo_clon/main.dart';
+import 'package:duolingo_clon/app.dart';
+import 'package:duolingo_clon/providers/learning_path_provider.dart';
+import 'package:duolingo_clon/providers/user_stats_provider.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() {
+    GoogleFonts.config.allowRuntimeFetching = false;
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('login muestra el CTA y navega al home', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<UserStatsProvider>(
+            create: (_) => UserStatsProvider(),
+          ),
+          ChangeNotifierProvider<LearningPathProvider>(
+            create: (_) => LearningPathProvider(),
+          ),
+        ],
+        child: const DuolingoApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text('duolingo'), findsOneWidget);
+    expect(find.text('GET STARTED'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.tap(find.text('GET STARTED'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Parejas: Expresa tus sentimientos'), findsOneWidget);
   });
 }
