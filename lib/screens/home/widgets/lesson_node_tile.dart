@@ -18,10 +18,11 @@ class LessonNodeTile extends StatelessWidget {
     final Color fill = isActive
         ? AppColors.sparkBlue
         : isCompleted
-            ? AppColors.eagerGreen
-            : AppColors.lockedNode;
-    final Color iconColor =
-        isActive || isCompleted ? AppColors.paperWhite : AppColors.pathLockedText;
+        ? AppColors.eagerGreen
+        : AppColors.lockedNode;
+    final Color iconColor = isActive || isCompleted
+        ? AppColors.paperWhite
+        : AppColors.pathLockedText;
 
     return Align(
       alignment: Alignment(node.horizontalOffset, 0),

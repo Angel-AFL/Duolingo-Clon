@@ -9,15 +9,16 @@ import 'app_colors.dart';
 /// - `dark`: pantallas de la app (bocetos en `/docs`).
 abstract final class AppTheme {
   static ThemeData get light {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.eagerGreen,
-      brightness: Brightness.light,
-    ).copyWith(
-      primary: AppColors.eagerGreen,
-      secondary: AppColors.sparkBlue,
-      surface: AppColors.paperWhite,
-      onSurface: AppColors.charcoal,
-    );
+    final colorScheme =
+        ColorScheme.fromSeed(
+          seedColor: AppColors.eagerGreen,
+          brightness: Brightness.light,
+        ).copyWith(
+          primary: AppColors.eagerGreen,
+          secondary: AppColors.sparkBlue,
+          surface: AppColors.paperWhite,
+          onSurface: AppColors.charcoal,
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -29,15 +30,16 @@ abstract final class AppTheme {
   }
 
   static ThemeData get dark {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.eagerGreen,
-      brightness: Brightness.dark,
-    ).copyWith(
-      primary: AppColors.eagerGreen,
-      secondary: AppColors.sparkBlue,
-      surface: AppColors.darkSurface,
-      onSurface: AppColors.paperWhite,
-    );
+    final colorScheme =
+        ColorScheme.fromSeed(
+          seedColor: AppColors.eagerGreen,
+          brightness: Brightness.dark,
+        ).copyWith(
+          primary: AppColors.eagerGreen,
+          secondary: AppColors.sparkBlue,
+          surface: AppColors.darkSurface,
+          onSurface: AppColors.paperWhite,
+        );
 
     return ThemeData(
       useMaterial3: true,

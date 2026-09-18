@@ -48,10 +48,7 @@ class LoginScreen extends StatelessWidget {
                 color: AppColors.heartPink,
               ),
               const SizedBox(height: AppSpacing.s16),
-              PrimaryButton(
-                label: 'Get started',
-                onPressed: onGetStarted,
-              ),
+              PrimaryButton(label: 'Get started', onPressed: onGetStarted),
               const SizedBox(height: AppSpacing.s12),
               SecondaryButton(
                 label: 'I already have an account',

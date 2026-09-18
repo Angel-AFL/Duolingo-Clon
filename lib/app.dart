@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
 import 'routes/app_routes.dart';
-import 'screens/home/home_screen.dart';
 import 'screens/login/login_screen.dart';
+import 'screens/shell/app_shell.dart';
+import 'screens/streak/streak_screen.dart';
 
 /// Raiz de la app: temas y rutas.
 class DuolingoApp extends StatelessWidget {
@@ -20,10 +21,11 @@ class DuolingoApp extends StatelessWidget {
       initialRoute: AppRoutes.login,
       routes: <String, WidgetBuilder>{
         AppRoutes.login: (BuildContext context) => LoginScreen(
-              onGetStarted: () =>
-                  Navigator.of(context).pushReplacementNamed(AppRoutes.home),
-            ),
-        AppRoutes.home: (BuildContext context) => const HomeScreen(),
+          onGetStarted: () =>
+              Navigator.of(context).pushReplacementNamed(AppRoutes.home),
+        ),
+        AppRoutes.home: (BuildContext context) => const AppShell(),
+        AppRoutes.streak: (BuildContext context) => const StreakScreen(),
       },
     );
   }

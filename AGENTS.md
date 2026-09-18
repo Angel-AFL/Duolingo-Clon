@@ -1,9 +1,11 @@
 # AGENTS.md
 
 Flutter app (Dart `^3.12.0`, Flutter 3.44) that clones the Duolingo mobile UI.
-`docs/` holds 6 hand-drawn sketches (login, home, liga, desafios, perfil, rachas)
-and is the **source of truth for UI**. Phase 1 (login + home) is implemented;
-the other 4 screens are not yet built.
+`docs/` holds 5 hand-drawn sketches (home, liga, desafios, perfil, rachas)
+and is the **source of truth for UI**. Login + the 4 main tabs are implemented
+through `AppShell`; the data is static mock (`lib/data/mock_data.dart`). A
+future Supabase integration is planned: models carry `fromJson`/`toJson` so the
+mock source can be swapped for repositories without touching the UI.
 
 ## Commands
 - Install deps: `flutter pub get`
@@ -25,9 +27,12 @@ the other 4 screens are not yet built.
 
 ## Architecture
 - Entry flow: `lib/main.dart` (MultiProvider) -> `lib/app.dart` (themes +
-  named routes) -> `lib/screens/<feature>/`.
+  named routes) -> `lib/screens/shell/app_shell.dart` (bottom-nav tabs via
+  `IndexedStack`) -> `lib/screens/<feature>/`. `StreakScreen` is pushed without
+  the bottom nav.
 - State: `provider` with `ChangeNotifier` in `lib/providers/`. No backend —
-  data is hardcoded in `lib/data/mock_data.dart`; models in `lib/models/`.
+  data is hardcoded in `lib/data/mock_data.dart`; models in `lib/models/` carry
+  `fromJson`/`toJson` to ease the future Supabase swap.
 - Routes are string constants in `lib/routes/app_routes.dart`.
 - Shared widgets in `lib/widgets/`; screen-specific sub-widgets in
   `lib/screens/<feature>/widgets/`.

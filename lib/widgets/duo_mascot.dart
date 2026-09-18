@@ -70,11 +70,7 @@ class _DuoPainter extends CustomPainter {
       canvas.drawCircle(center, eyeRadius, stroke);
       fill.color = _pupil;
       final double dx = cx < w / 2 ? w * 0.02 : -w * 0.02;
-      canvas.drawCircle(
-        Offset(cx + dx, h * 0.45),
-        eyeRadius * 0.5,
-        fill,
-      );
+      canvas.drawCircle(Offset(cx + dx, h * 0.45), eyeRadius * 0.5, fill);
     }
 
     final beak = Path()

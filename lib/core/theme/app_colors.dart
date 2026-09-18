@@ -38,4 +38,22 @@ abstract final class AppColors {
   static const Color heartPink = Color(0xFFFF4B4B);
   static const Color leaguePurple = Color(0xFFCE82FF);
   static const Color superViolet = Color(0xFF9069F3);
+
+  // --- Liga ---
+  static const Color leagueGradientStart = Color(0xFF6C4CF1);
+  static const Color leagueGradientEnd = Color(0xFF1CB0F6);
+  static const Color leagueRowAlt = Color(0xFF1A272E);
+  static const Color podiumGold = Color(0xFFFFC800);
+  static const Color podiumSilver = Color(0xFFBFC5CC);
+  static const Color podiumBronze = Color(0xFFCD7F32);
+
+  // --- Perfil ---
+  static const Color profileYellow = Color(0xFFF9E27D);
+  static const Color avatarSkin = Color(0xFFF3B98E);
+
+  // --- Superficies y barras de progreso ---
+  static const Color darkCard = Color(0xFF1A262C);
+  static const Color progressTrack = Color(0xFF37464F);
+  static const Color superPink = Color(0xFFFF4FA3);
+  static const Color rewardTeal = Color(0xFF2B6E7F);
 }

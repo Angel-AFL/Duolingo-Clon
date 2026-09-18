@@ -15,8 +15,7 @@ class LessonPath extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<LessonNode> nodes =
-        context.watch<LearningPathProvider>().nodes;
+    final List<LessonNode> nodes = context.watch<LearningPathProvider>().nodes;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -25,9 +24,7 @@ class LessonPath extends StatelessWidget {
           children: <Widget>[
             for (final LessonNode node in nodes)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacing.s8,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
                 child: LessonNodeTile(
                   node: node,
                   onTap: onNodeTap == null ? null : () => onNodeTap!(node),
@@ -35,11 +32,7 @@ class LessonPath extends StatelessWidget {
               ),
           ],
         ),
-        const Positioned(
-          left: 0,
-          top: 130,
-          child: DuoMascot(size: 108),
-        ),
+        const Positioned(left: 0, top: 130, child: DuoMascot(size: 108)),
       ],
     );
   }

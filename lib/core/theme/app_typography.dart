@@ -10,76 +10,95 @@ abstract final class AppTypography {
 
   /// feather 700 — titulares display de seccion (48px).
   static TextStyle display({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 48,
-        fontWeight: FontWeight.w900,
-        height: 1.2,
-        letterSpacing: -0.96,
-        color: color,
-      );
+    _family,
+    fontSize: 48,
+    fontWeight: FontWeight.w900,
+    height: 1.2,
+    letterSpacing: -0.96,
+    color: color,
+  );
 
   /// feather 700 — display grande (64px).
   static TextStyle displayLarge({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 64,
-        fontWeight: FontWeight.w900,
-        height: 1.2,
-        letterSpacing: -1.28,
-        color: color,
-      );
+    _family,
+    fontSize: 64,
+    fontWeight: FontWeight.w900,
+    height: 1.2,
+    letterSpacing: -1.28,
+    color: color,
+  );
 
   /// duolingo-sans 700 — subheading grande (32px).
   static TextStyle headingSm({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 32,
-        fontWeight: FontWeight.w800,
-        height: 1.2,
-        color: color,
-      );
+    _family,
+    fontSize: 32,
+    fontWeight: FontWeight.w800,
+    height: 1.2,
+    color: color,
+  );
+
+  /// feather 700 — titulo de pantalla (26px).
+  static TextStyle screenTitle({Color? color}) => GoogleFonts.getFont(
+    _family,
+    fontSize: 26,
+    fontWeight: FontWeight.w800,
+    height: 1.2,
+    color: color,
+  );
+
+  /// duolingo-sans 700 — etiqueta uppercase con tracking (13px).
+  static TextStyle label({Color? color}) => GoogleFonts.getFont(
+    _family,
+    fontSize: 13,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+    letterSpacing: 1.0,
+    color: color,
+  );
 
   /// duolingo-sans 700 — subheading (19px).
   static TextStyle subheading({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 19,
-        fontWeight: FontWeight.w700,
-        height: 1.4,
-        color: color,
-      );
+    _family,
+    fontSize: 19,
+    fontWeight: FontWeight.w700,
+    height: 1.4,
+    color: color,
+  );
 
   /// duolingo-sans 700 — nav labels (15px, uppercase + tracking).
   static TextStyle navLabel({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-        height: 1.33,
-        letterSpacing: 0.795,
-        color: color,
-      );
+    _family,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    height: 1.33,
+    letterSpacing: 0.795,
+    color: color,
+  );
 
   /// duolingo-sans 500/600 — cuerpo (17px).
   static TextStyle body({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 17,
-        fontWeight: FontWeight.w600,
-        height: 1.18,
-        color: color,
-      );
+    _family,
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    height: 1.18,
+    color: color,
+  );
 
   /// duolingo-sans — caption (13px).
   static TextStyle caption({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        height: 1.23,
-        color: color,
-      );
+    _family,
+    fontSize: 13,
+    fontWeight: FontWeight.w700,
+    height: 1.23,
+    color: color,
+  );
 
   /// Texto de valores numericos en la barra de stats.
   static TextStyle statValue({Color? color}) => GoogleFonts.getFont(
-        _family,
-        fontSize: 17,
-        fontWeight: FontWeight.w800,
-        height: 1.1,
-        color: color,
-      );
+    _family,
+    fontSize: 17,
+    fontWeight: FontWeight.w800,
+    height: 1.1,
+    color: color,
+  );
 }

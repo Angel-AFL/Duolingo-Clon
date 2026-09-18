@@ -25,9 +25,7 @@ class AppBottomNav extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.darkBackground,
-        border: Border(
-          top: BorderSide(color: AppColors.darkBorder),
-        ),
+        border: Border(top: BorderSide(color: AppColors.darkBorder)),
       ),
       child: SafeArea(
         top: false,
@@ -51,11 +49,7 @@ class AppBottomNav extends StatelessWidget {
 }
 
 class _NavButton extends StatelessWidget {
-  const _NavButton({
-    required this.item,
-    required this.selected,
-    this.onTap,
-  });
+  const _NavButton({required this.item, required this.selected, this.onTap});
 
   final NavItem item;
   final bool selected;
@@ -78,9 +72,7 @@ class _NavButton extends StatelessWidget {
         child: Icon(
           item.icon,
           size: 28,
-          color: selected
-              ? item.color
-              : item.color.withValues(alpha: 0.55),
+          color: selected ? item.color : item.color.withValues(alpha: 0.55),
         ),
       ),
     );

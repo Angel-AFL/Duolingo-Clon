@@ -6,11 +6,7 @@ import '../../../core/theme/app_typography.dart';
 
 /// Banner azul de seccion/etapa actual (boceto `home.jpeg`).
 class SectionBanner extends StatelessWidget {
-  const SectionBanner({
-    super.key,
-    required this.stage,
-    required this.title,
-  });
+  const SectionBanner({super.key, required this.stage, required this.title});
 
   final String stage;
   final String title;
@@ -38,9 +34,7 @@ class SectionBanner extends StatelessWidget {
                 const SizedBox(height: AppSpacing.s8),
                 Text(
                   title,
-                  style: AppTypography.subheading(
-                    color: AppColors.paperWhite,
-                  ),
+                  style: AppTypography.subheading(color: AppColors.paperWhite),
                 ),
               ],
             ),
