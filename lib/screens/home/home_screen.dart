@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_spacing.dart';
-import '../../data/mock_data.dart';
+import '../../data/app_constants.dart';
 import '../../models/lesson_node.dart';
 import '../../providers/learning_path_provider.dart';
 import 'widgets/lesson_path.dart';
@@ -39,8 +39,8 @@ class HomeScreen extends StatelessWidget {
               ),
               children: <Widget>[
                 const SectionBanner(
-                  stage: MockData.sectionStage,
-                  title: MockData.sectionTitle,
+                  stage: AppConstants.sectionStage,
+                  title: AppConstants.sectionTitle,
                 ),
                 const SizedBox(height: AppSpacing.s24),
                 LessonPath(

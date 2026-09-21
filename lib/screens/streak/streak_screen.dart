@@ -5,9 +5,9 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
-import '../../data/mock_data.dart';
 import '../../models/friend_streak.dart';
 import '../../models/streak_calendar.dart';
+import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../widgets/avatar_circle.dart';
 import 'widgets/streak_calendar_view.dart';
@@ -96,7 +96,7 @@ class _PersonalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int streakDays = context.watch<UserStatsProvider>().stats.streakDays;
-    final StreakCalendar calendar = MockData.streakCalendar;
+    final StreakCalendar calendar = context.watch<StreakProvider>().calendar;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.s16),
@@ -194,13 +194,17 @@ class _FriendsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<FriendStreak> friendStreaks = context
+        .watch<StreakProvider>()
+        .friendStreaks;
+
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.s16),
-      itemCount: MockData.friendStreaks.length,
+      itemCount: friendStreaks.length,
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: AppSpacing.s12),
       itemBuilder: (BuildContext context, int index) {
-        final FriendStreak streak = MockData.friendStreaks[index];
+        final FriendStreak streak = friendStreaks[index];
         return Row(
           children: <Widget>[
             AvatarCircle(
