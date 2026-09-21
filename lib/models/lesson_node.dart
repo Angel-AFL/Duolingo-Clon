@@ -36,4 +36,18 @@ class LessonNode {
         return Icons.forum_rounded;
     }
   }
+
+  factory LessonNode.fromJson(Map<String, dynamic> json) {
+    return LessonNode(
+      type: LessonNodeType.values.byName(json['type'] as String),
+      status: LessonNodeStatus.values.byName(json['status'] as String),
+      horizontalOffset: (json['horizontal_offset'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'type': type.name,
+    'status': status.name,
+    'horizontal_offset': horizontalOffset,
+  };
 }

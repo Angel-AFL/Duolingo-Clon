@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'providers/auth_provider.dart';
 import 'routes/app_routes.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/shell/app_shell.dart';
@@ -18,15 +20,23 @@ class DuolingoApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
-      initialRoute: AppRoutes.login,
+      home: const _AuthGate(),
       routes: <String, WidgetBuilder>{
-        AppRoutes.login: (BuildContext context) => LoginScreen(
-          onGetStarted: () =>
-              Navigator.of(context).pushReplacementNamed(AppRoutes.home),
-        ),
-        AppRoutes.home: (BuildContext context) => const AppShell(),
         AppRoutes.streak: (BuildContext context) => const StreakScreen(),
       },
     );
+  }
+}
+
+/// Muestra el login o el shell segun el estado de autenticacion.
+class _AuthGate extends StatelessWidget {
+  const _AuthGate();
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isAuthenticated = context.select<AuthProvider, bool>(
+      (AuthProvider auth) => auth.isAuthenticated,
+    );
+    return isAuthenticated ? const AppShell() : const LoginScreen();
   }
 }

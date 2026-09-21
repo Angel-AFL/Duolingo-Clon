@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
-import '../../data/mock_data.dart';
+import '../../data/app_constants.dart';
 import '../../models/daily_challenge.dart';
 import '../../providers/challenges_provider.dart';
 import '../../widgets/section_label.dart';
@@ -22,8 +22,8 @@ class ChallengesScreen extends StatelessWidget {
     return Column(
       children: <Widget>[
         ChallengesHeader(
-          month: MockData.challengeMonth,
-          daysLeft: MockData.challengeDaysLeft,
+          month: AppConstants.challengeMonth,
+          daysLeft: AppConstants.challengeDaysLeft,
           points: challenges.points,
           pointsTarget: challenges.pointsTarget,
         ),
@@ -37,8 +37,8 @@ class ChallengesScreen extends StatelessWidget {
             ),
             children: <Widget>[
               _PartnerRow(
-                name: MockData.challengePartner,
-                exp: MockData.challengePartnerExp,
+                name: AppConstants.challengePartner,
+                exp: AppConstants.challengePartnerExp,
               ),
               const SizedBox(height: AppSpacing.s16),
               Row(

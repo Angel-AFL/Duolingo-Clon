@@ -4,9 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:duolingo_clon/app.dart';
+import 'package:duolingo_clon/providers/auth_provider.dart';
 import 'package:duolingo_clon/providers/challenges_provider.dart';
 import 'package:duolingo_clon/providers/league_provider.dart';
 import 'package:duolingo_clon/providers/learning_path_provider.dart';
+import 'package:duolingo_clon/providers/profile_provider.dart';
+import 'package:duolingo_clon/providers/streak_provider.dart';
 import 'package:duolingo_clon/providers/user_stats_provider.dart';
 import 'package:duolingo_clon/routes/app_routes.dart';
 import 'package:duolingo_clon/screens/challenges/challenges_screen.dart';
@@ -17,6 +20,7 @@ import 'package:duolingo_clon/screens/streak/streak_screen.dart';
 import 'package:duolingo_clon/widgets/app_bottom_nav.dart';
 
 List<ChangeNotifierProvider> _providers() => <ChangeNotifierProvider>[
+  ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
   ChangeNotifierProvider<UserStatsProvider>(create: (_) => UserStatsProvider()),
   ChangeNotifierProvider<LearningPathProvider>(
     create: (_) => LearningPathProvider(),
@@ -25,6 +29,8 @@ List<ChangeNotifierProvider> _providers() => <ChangeNotifierProvider>[
     create: (_) => ChallengesProvider(),
   ),
   ChangeNotifierProvider<LeagueProvider>(create: (_) => LeagueProvider()),
+  ChangeNotifierProvider<ProfileProvider>(create: (_) => ProfileProvider()),
+  ChangeNotifierProvider<StreakProvider>(create: (_) => StreakProvider()),
 ];
 
 Widget _app() =>
@@ -42,22 +48,26 @@ Widget _screen(Widget child) => MultiProvider(
   ),
 );
 
+Future<void> _login(WidgetTester tester) async {
+  await tester.enterText(find.byType(TextField).at(0), 'test@test.com');
+  await tester.enterText(find.byType(TextField).at(1), 'secret123');
+  await tester.tap(find.text('INICIAR SESIÓN'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUpAll(() {
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
-  testWidgets('login muestra el CTA y navega al home', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('login autentica y navega al home', (WidgetTester tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
     expect(find.text('duolingo'), findsOneWidget);
-    expect(find.text('GET STARTED'), findsOneWidget);
+    expect(find.text('INICIAR SESIÓN'), findsOneWidget);
 
-    await tester.tap(find.text('GET STARTED'));
-    await tester.pumpAndSettle();
+    await _login(tester);
 
     expect(find.text('Parejas: Expresa tus sentimientos'), findsOneWidget);
   });
@@ -65,8 +75,7 @@ void main() {
   testWidgets('el bottom nav cambia de pestana', (WidgetTester tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
-    await tester.tap(find.text('GET STARTED'));
-    await tester.pumpAndSettle();
+    await _login(tester);
 
     AppBottomNav nav() =>
         tester.widget<AppBottomNav>(find.byType(AppBottomNav));

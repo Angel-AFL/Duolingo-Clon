@@ -5,10 +5,11 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
-import '../../data/mock_data.dart';
 import '../../models/friend_streak.dart';
 import '../../models/profile_info.dart';
 import '../../models/user_stats.dart';
+import '../../providers/profile_provider.dart';
+import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/section_label.dart';
@@ -26,7 +27,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserStats stats = context.watch<UserStatsProvider>().stats;
-    final ProfileInfo profile = MockData.profile;
+    final ProfileInfo profile = context.watch<ProfileProvider>().profile;
+    final List<FriendStreak> friendStreaks = context
+        .watch<StreakProvider>()
+        .friendStreaks;
 
     return Column(
       children: <Widget>[
@@ -111,11 +115,11 @@ class ProfileScreen extends StatelessWidget {
                 height: 108,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: MockData.friendStreaks.length,
+                  itemCount: friendStreaks.length,
                   separatorBuilder: (BuildContext context, int index) =>
                       const SizedBox(width: AppSpacing.s8),
                   itemBuilder: (BuildContext context, int index) {
-                    final FriendStreak streak = MockData.friendStreaks[index];
+                    final FriendStreak streak = friendStreaks[index];
                     return FriendStreakItem(
                       streak: streak,
                       onTap: () => _openStreak(context),
