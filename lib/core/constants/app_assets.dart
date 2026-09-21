@@ -1,10 +1,16 @@
 /// Recursos de la app.
 ///
-/// Aun no se incluyen los PNGs de la mascota en el repo. Mientras
-/// `hasMascotAsset` sea `false`, los widgets usan un placeholder dibujado.
-/// Al agregar `assets/images/duo.png`, registrarlo en `pubspec.yaml` y
-/// cambiar la bandera a `true`.
+/// Las imágenes viven en `assets/images/` (registrada en `pubspec.yaml`).
+/// Usa [image] para referenciar cualquier archivo de esa carpeta sin
+/// repetir la ruta base.
 abstract final class AppAssets {
-  static const bool hasMascotAsset = false;
-  static const String duoMascot = 'assets/images/duo.png';
+  static const String _images = 'assets/images';
+
+  /// `true` cuando `assets/images/duo.png` existe; si no, `DuoMascot`
+  /// cae al placeholder dibujado.
+  static const bool hasMascotAsset = true;
+  static const String duoMascot = '$_images/duo.png';
+
+  /// Ruta de una imagen dentro de `assets/images/`.
+  static String image(String name) => '$_images/$name';
 }
