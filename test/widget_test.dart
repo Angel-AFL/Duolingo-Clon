@@ -138,4 +138,27 @@ void main() {
     expect(find.text('Días de racha'), findsOneWidget);
     expect(find.text('PERSONAL'), findsOneWidget);
   });
+
+  testWidgets('el perchero cambia el avatar por un preset', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(_screen(const ProfileScreen()));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.emoji_nature_rounded), findsNothing);
+
+    await tester.tap(find.byIcon(Icons.checkroom_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('Elige tu foto'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.emoji_nature_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Elige tu foto'), findsNothing);
+    expect(find.byIcon(Icons.emoji_nature_rounded), findsOneWidget);
+  });
 }

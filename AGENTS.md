@@ -42,6 +42,22 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   Supabase data. Repositories live in `lib/data/repositories/` (interface +
   `Supabase*` impl + `Mock*` impl). `main.dart` injects the Supabase impls when
   `.env` is configured, otherwise the providers fall back to their `Mock*` defaults.
+  `main.dart` **does not** call `load()`: the `Supabase*` repos read
+  `auth.currentUser`, so loading only happens once there is a session. `AppShell`
+  (which only builds authenticated) calls `load()` on all providers from
+  `initState` via a post-frame callback; sign-out/sign-in rebuilds it and reloads.
+- Profile: `SupabaseProfileRepository.fetchProfile()` uses `maybeSingle()` and
+  falls back to an upsert of a default row when the user has no `profiles` row
+  (e.g. accounts created before the schema). `ProfileProvider` exposes
+  `isLoading`/`hasLoaded`/`hasError`; `ProfileScreen` shows a loader on first
+  load, an error + retry view, and wraps its list in a `RefreshIndicator`.
+- Profile photo: the header perchero (`checkroom_rounded`) opens
+  `showAvatarPickerSheet` (presets + `image_picker` gallery/camera). Photos go to
+  the public `avatars` Storage bucket at `{userId}/avatar_<ts>.<ext>` and the URL
+  is saved in `profiles.avatar_url`; presets are saved as `preset:<id>` and
+  rendered from `lib/models/avatar_preset.dart`. `avatar_url` may hold an
+  `https://` URL, an `assets/...` path, or a `preset:<id>` key. Apply
+  `supabase/migrations/0002_profile_avatar.sql` for the column, bucket and RLS.
 - Auth: `AuthProvider` wraps `AuthRepository`; `AuthGate` in `app.dart` reacts to
   `isAuthenticated`. `LoginScreen` handles email/password sign-in and sign-up.
 - Routes are string constants in `lib/routes/app_routes.dart`. Only `streak` is a
