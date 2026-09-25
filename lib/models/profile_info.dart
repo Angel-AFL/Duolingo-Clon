@@ -10,9 +10,16 @@ class ProfileInfo {
     required this.followers,
     required this.league,
     required this.totalExp,
+    this.avatarUrl,
   });
 
   final String name;
+
+  /// URL de la foto de perfil.
+  ///
+  /// Puede ser una URL de Supabase Storage (`https://...`), una ruta de asset
+  /// (`assets/...`) o un preset (`preset:<id>`). `null` usa el placeholder.
+  final String? avatarUrl;
 
   /// Usuario con `@`.
   final String handle;
@@ -49,6 +56,7 @@ class ProfileInfo {
       followers: json['followers'] as int,
       league: json['league'] as String,
       totalExp: json['total_exp'] as int,
+      avatarUrl: json['avatar_url'] as String?,
     );
   }
 
@@ -62,5 +70,19 @@ class ProfileInfo {
     'followers': followers,
     'league': league,
     'total_exp': totalExp,
+    'avatar_url': avatarUrl,
   };
+
+  ProfileInfo copyWith({String? avatarUrl}) => ProfileInfo(
+    name: name,
+    handle: handle,
+    joinedYear: joinedYear,
+    superSince: superSince,
+    courses: courses,
+    following: following,
+    followers: followers,
+    league: league,
+    totalExp: totalExp,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+  );
 }

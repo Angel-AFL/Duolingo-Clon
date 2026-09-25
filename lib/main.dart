@@ -49,35 +49,35 @@ Future<void> main() async {
             repository: supabase == null
                 ? null
                 : SupabaseUserStatsRepository(supabase),
-          )..load(),
+          ),
         ),
         ChangeNotifierProvider<LearningPathProvider>(
           create: (_) => LearningPathProvider(
             repository: supabase == null
                 ? null
                 : SupabaseLearningPathRepository(supabase),
-          )..load(),
+          ),
         ),
         ChangeNotifierProvider<ChallengesProvider>(
           create: (_) => ChallengesProvider(
             repository: supabase == null
                 ? null
                 : SupabaseChallengesRepository(supabase),
-          )..load(),
+          ),
         ),
         ChangeNotifierProvider<LeagueProvider>(
           create: (_) => LeagueProvider(
             repository: supabase == null
                 ? null
                 : SupabaseLeagueRepository(supabase),
-          )..load(),
+          ),
         ),
         ChangeNotifierProvider<ProfileProvider>(
           create: (_) => ProfileProvider(
             repository: supabase == null
                 ? null
                 : SupabaseProfileRepository(supabase),
-          )..load(),
+          ),
         ),
         ChangeNotifierProvider<StreakProvider>(
           create: (_) => StreakProvider(
@@ -87,7 +87,7 @@ Future<void> main() async {
             friendStreakRepository: supabase == null
                 ? null
                 : SupabaseFriendStreakRepository(supabase),
-          )..load(),
+          ),
         ),
       ],
       child: const DuolingoApp(),

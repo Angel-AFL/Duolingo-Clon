@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../models/nav_item.dart';
+import '../../providers/challenges_provider.dart';
+import '../../providers/league_provider.dart';
+import '../../providers/learning_path_provider.dart';
+import '../../providers/profile_provider.dart';
+import '../../providers/streak_provider.dart';
+import '../../providers/user_stats_provider.dart';
 import '../../widgets/app_bottom_nav.dart';
 import '../challenges/challenges_screen.dart';
 import '../home/home_screen.dart';
@@ -21,6 +28,26 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadProviders());
+  }
+
+  /// Carga los datos desde Supabase (o mock) una vez que hay sesion activa.
+  ///
+  /// `AppShell` solo se construye autenticado, asi que aqui es donde los
+  /// providers deben consultar la base de datos, no en `main.dart`.
+  void _loadProviders() {
+    if (!mounted) return;
+    context.read<UserStatsProvider>().load();
+    context.read<LearningPathProvider>().load();
+    context.read<ChallengesProvider>().load();
+    context.read<LeagueProvider>().load();
+    context.read<ProfileProvider>().load();
+    context.read<StreakProvider>().load();
+  }
 
   static const List<NavItem> _navItems = <NavItem>[
     NavItem(icon: Icons.home_rounded, color: AppColors.streakOrange),
