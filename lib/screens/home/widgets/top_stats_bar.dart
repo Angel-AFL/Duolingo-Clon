@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../providers/user_stats_provider.dart';
+import '../../../routes/app_routes.dart';
 import '../../../widgets/stat_chip.dart';
 
 /// Barra superior con bandera, racha, gemas y corazones.
@@ -39,6 +40,7 @@ class TopStatsBar extends StatelessWidget {
             ),
             value: formatThousands(stats.streakDays),
             valueColor: AppColors.paperWhite,
+            onTap: () => Navigator.of(context).pushNamed(AppRoutes.streak),
           ),
           StatChip(
             leading: const Icon(

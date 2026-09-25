@@ -8,9 +8,17 @@ import '../../../widgets/stat_box.dart';
 
 /// Calendario mensual de practica con dias activos resaltados.
 class StreakCalendarView extends StatelessWidget {
-  const StreakCalendarView({super.key, required this.calendar});
+  const StreakCalendarView({
+    super.key,
+    required this.calendar,
+    required this.streakDays,
+  });
 
   final StreakCalendar calendar;
+
+  /// Valor unico de racha (`user_stats.streak_days`), mostrado como dias de
+  /// practica para no depender de la sincronizacion con la BD.
+  final int streakDays;
 
   static const List<String> _weekdays = <String>[
     'D',
@@ -86,7 +94,7 @@ class StreakCalendarView extends StatelessWidget {
               child: StatBox(
                 icon: Icons.check_circle_rounded,
                 iconColor: AppColors.streakOrange,
-                value: '${calendar.practiceDays}',
+                value: '$streakDays',
                 label: 'días de práctica',
               ),
             ),
