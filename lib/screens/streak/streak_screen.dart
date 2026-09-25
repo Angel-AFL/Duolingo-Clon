@@ -183,7 +183,7 @@ class _PersonalTab extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.s24),
-        StreakCalendarView(calendar: calendar),
+        StreakCalendarView(calendar: calendar, streakDays: streakDays),
       ],
     );
   }
