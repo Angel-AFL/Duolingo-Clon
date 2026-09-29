@@ -5,9 +5,12 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../models/lesson_exercise.dart';
+import '../../models/lesson_outcome.dart';
 import '../../providers/challenges_provider.dart';
+import '../../providers/league_provider.dart';
 import '../../providers/learning_path_provider.dart';
 import '../../providers/lesson_provider.dart';
+import '../../providers/profile_provider.dart';
 import '../../widgets/primary_button.dart';
 import 'widgets/fill_blank_exercise.dart';
 import 'widgets/lesson_feedback_bar.dart';
@@ -50,11 +53,21 @@ class _LessonScreenState extends State<LessonScreen> {
   Future<void> _finish() async {
     final LearningPathProvider path = context.read<LearningPathProvider>();
     final ChallengesProvider challenges = context.read<ChallengesProvider>();
+    final ProfileProvider profile = context.read<ProfileProvider>();
+    final LeagueProvider league = context.read<LeagueProvider>();
+    final LessonProvider lesson = context.read<LessonProvider>();
     final int activeIndex = path.activeIndex;
     final bool wasActive =
         activeIndex >= 0 && path.nodes[activeIndex].position == _position;
 
-    challenges.addPoints(_lessonExp);
+    final LessonOutcome outcome = LessonOutcome(
+      exp: _lessonExp,
+      accuracy: lesson.total == 0 ? 0 : lesson.correctCount / lesson.total,
+      bestStreak: lesson.bestStreak,
+    );
+    challenges.recordLesson(outcome);
+    profile.addExp(_lessonExp);
+    league.addExp(_lessonExp);
     Navigator.of(context).maybePop();
 
     if (wasActive) {

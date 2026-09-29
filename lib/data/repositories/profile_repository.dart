@@ -14,6 +14,9 @@ abstract interface class ProfileRepository {
 
   /// Persiste la referencia del avatar (URL, asset o `preset:<id>`).
   Future<ProfileInfo> updateAvatarUrl(String avatarUrl);
+
+  /// Suma EXP al total del perfil y devuelve el perfil actualizado.
+  Future<ProfileInfo> addExp(int amount);
 }
 
 class SupabaseProfileRepository implements ProfileRepository {
@@ -57,11 +60,16 @@ class SupabaseProfileRepository implements ProfileRepository {
     final String ext = extension.toLowerCase().replaceAll('.', '');
     final String path =
         '${user.id}/avatar_${DateTime.now().millisecondsSinceEpoch}.$ext';
-    await _client.storage.from(_bucket).uploadBinary(
-      path,
-      bytes,
-      fileOptions: FileOptions(contentType: _contentType(ext), upsert: true),
-    );
+    await _client.storage
+        .from(_bucket)
+        .uploadBinary(
+          path,
+          bytes,
+          fileOptions: FileOptions(
+            contentType: _contentType(ext),
+            upsert: true,
+          ),
+        );
     return _client.storage.from(_bucket).getPublicUrl(path);
   }
 
@@ -76,6 +84,21 @@ class SupabaseProfileRepository implements ProfileRepository {
         .update(<String, dynamic>{'avatar_url': avatarUrl})
         .eq('id', user.id);
     return fetchProfile();
+  }
+
+  @override
+  Future<ProfileInfo> addExp(int amount) async {
+    final User? user = _client.auth.currentUser;
+    if (user == null) {
+      throw StateError('No hay sesión activa para actualizar el perfil.');
+    }
+    final ProfileInfo current = await fetchProfile();
+    final int totalExp = current.totalExp + amount;
+    await _client
+        .from('profiles')
+        .update(<String, dynamic>{'total_exp': totalExp})
+        .eq('id', user.id);
+    return current.copyWith(totalExp: totalExp);
   }
 
   ProfileInfo _defaultProfile(User user) {
@@ -127,6 +150,12 @@ class MockProfileRepository implements ProfileRepository {
   @override
   Future<ProfileInfo> updateAvatarUrl(String avatarUrl) async {
     _profile = _profile.copyWith(avatarUrl: avatarUrl);
+    return _profile;
+  }
+
+  @override
+  Future<ProfileInfo> addExp(int amount) async {
+    _profile = _profile.copyWith(totalExp: _profile.totalExp + amount);
     return _profile;
   }
 }

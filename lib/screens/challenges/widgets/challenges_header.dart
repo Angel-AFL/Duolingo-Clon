@@ -23,6 +23,9 @@ class ChallengesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isComplete = points >= pointsTarget;
+    final int remaining = (pointsTarget - points).clamp(0, pointsTarget);
+
     return Container(
       width: double.infinity,
       color: AppColors.sparkBlue,
@@ -85,6 +88,19 @@ class ChallengesHeader extends StatelessWidget {
                         ProgressBar(
                           value: points.toDouble(),
                           target: pointsTarget.toDouble(),
+                          unit: 'pts',
+                          showCompletionIcon: true,
+                        ),
+                        const SizedBox(height: AppSpacing.s8),
+                        Text(
+                          isComplete
+                              ? '¡Desafío completado!'
+                              : 'Te faltan $remaining puntos',
+                          style: AppTypography.label(
+                            color: isComplete
+                                ? AppColors.eagerGreen
+                                : AppColors.pencilGray,
+                          ),
                         ),
                       ],
                     ),

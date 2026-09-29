@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:duolingo_clon/app.dart';
+import 'package:duolingo_clon/core/utils/formatters.dart';
 import 'package:duolingo_clon/data/repositories/learning_path_repository.dart';
 import 'package:duolingo_clon/models/lesson_exercise.dart';
 import 'package:duolingo_clon/models/lesson_node.dart';
+import 'package:duolingo_clon/models/lesson_outcome.dart';
 import 'package:duolingo_clon/providers/auth_provider.dart';
 import 'package:duolingo_clon/providers/challenges_provider.dart';
 import 'package:duolingo_clon/providers/league_provider.dart';
@@ -187,9 +189,35 @@ void main() {
     await tester.pumpWidget(_screen(const ChallengesScreen()));
     await tester.pumpAndSettle();
 
-    expect(find.text('Desafío de septiembre'), findsOneWidget);
+    expect(
+      find.text('Desafío de ${monthNameEs(DateTime.now())}'),
+      findsOneWidget,
+    );
     expect(find.text('DESAFÍOS DEL DÍA'), findsOneWidget);
     expect(find.text('Gana 50 EXP'), findsOneWidget);
+  });
+
+  test('recordLesson avanza cada reto segun su metrica', () {
+    final ChallengesProvider challenges = ChallengesProvider();
+    challenges.recordLesson(
+      const LessonOutcome(exp: 10, accuracy: 1.0, bestStreak: 4),
+    );
+
+    expect(challenges.points, 37);
+    expect(challenges.challenges[0].progress, 10);
+    expect(challenges.challenges[1].progress, 1);
+    expect(challenges.challenges[2].progress, 1);
+  });
+
+  test('recordLesson no avanza racha ni precision si la leccion no cumple', () {
+    final ChallengesProvider challenges = ChallengesProvider();
+    challenges.recordLesson(
+      const LessonOutcome(exp: 10, accuracy: 0.5, bestStreak: 1),
+    );
+
+    expect(challenges.challenges[0].progress, 10);
+    expect(challenges.challenges[1].progress, 0);
+    expect(challenges.challenges[2].progress, 0);
   });
 
   testWidgets('perfil abre la pantalla de rachas', (WidgetTester tester) async {
@@ -529,5 +557,33 @@ void main() {
 
     expect(path.activeIndex, -1);
     expect(challenges.points, greaterThan(pointsBefore));
+  });
+
+  testWidgets('completar una leccion suma EXP en perfil y liga', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    await _login(tester);
+
+    final BuildContext homeContext = tester.element(find.byType(HomeScreen));
+    final ProfileProvider profile = Provider.of<ProfileProvider>(
+      homeContext,
+      listen: false,
+    );
+    final LeagueProvider league = Provider.of<LeagueProvider>(
+      homeContext,
+      listen: false,
+    );
+
+    final int profileExpBefore = profile.profile.totalExp;
+    final int leagueExpBefore = league.currentUser.exp;
+
+    await tester.tap(find.byIcon(Icons.star_rounded).first);
+    await tester.pumpAndSettle();
+    await _playLesson0(tester);
+
+    expect(profile.profile.totalExp, profileExpBefore + 10);
+    expect(league.currentUser.exp, leagueExpBefore + 10);
   });
 }

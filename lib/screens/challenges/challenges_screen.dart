@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import '../../core/utils/formatters.dart';
 import '../../data/app_constants.dart';
 import '../../models/daily_challenge.dart';
 import '../../providers/challenges_provider.dart';
@@ -18,12 +19,13 @@ class ChallengesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ChallengesProvider challenges = context.watch<ChallengesProvider>();
+    final DateTime now = DateTime.now();
 
     return Column(
       children: <Widget>[
         ChallengesHeader(
-          month: AppConstants.challengeMonth,
-          daysLeft: AppConstants.challengeDaysLeft,
+          month: monthNameEs(now),
+          daysLeft: daysLeftInMonth(now),
           points: challenges.points,
           pointsTarget: challenges.pointsTarget,
         ),

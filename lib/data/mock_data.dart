@@ -128,8 +128,6 @@ abstract final class MockData {
   ];
 
   // --- Desafios (boceto `desafios.jpeg`) ---
-  static const String challengeMonth = 'septiembre';
-  static const int challengeDaysLeft = 21;
   static const int challengePoints = 27;
   static const int challengePointsTarget = 60;
   static const String challengePartner = 'Roxsana';
@@ -141,18 +139,21 @@ abstract final class MockData {
       progress: 0,
       target: 50,
       reward: ChallengeReward.wood,
+      metric: ChallengeMetric.exp,
     ),
     DailyChallenge(
-      title: 'Responde correctamente 5 veces seguidas en 2 lecciones',
+      title: 'Consigue una racha de 3 aciertos seguidos en 2 lecciones',
       progress: 0,
       target: 2,
       reward: ChallengeReward.silver,
+      metric: ChallengeMetric.streak,
     ),
     DailyChallenge(
       title: 'Obtén un puntaje de 90 % en 3 lecciones',
       progress: 0,
       target: 3,
       reward: ChallengeReward.gold,
+      metric: ChallengeMetric.accuracy,
     ),
   ];
 

@@ -73,7 +73,7 @@ class ProfileInfo {
     'avatar_url': avatarUrl,
   };
 
-  ProfileInfo copyWith({String? avatarUrl}) => ProfileInfo(
+  ProfileInfo copyWith({String? avatarUrl, int? totalExp}) => ProfileInfo(
     name: name,
     handle: handle,
     joinedYear: joinedYear,
@@ -82,7 +82,7 @@ class ProfileInfo {
     following: following,
     followers: followers,
     league: league,
-    totalExp: totalExp,
+    totalExp: totalExp ?? this.totalExp,
     avatarUrl: avatarUrl ?? this.avatarUrl,
   );
 }

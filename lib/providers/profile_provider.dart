@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../data/mock_data.dart';
@@ -40,11 +42,15 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  /// Suma EXP al total del perfil y lo persiste.
+  void addExp(int amount) {
+    _profile = _profile.copyWith(totalExp: _profile.totalExp + amount);
+    notifyListeners();
+    unawaited(_repository.addExp(amount));
+  }
+
   /// Sube una imagen elegida por el usuario y actualiza el avatar.
-  Future<void> updateAvatarFromBytes(
-    Uint8List bytes,
-    String extension,
-  ) async {
+  Future<void> updateAvatarFromBytes(Uint8List bytes, String extension) async {
     await _runAvatarUpdate(() async {
       final String url = await _repository.uploadAvatar(bytes, extension);
       _profile = await _repository.updateAvatarUrl(url);
