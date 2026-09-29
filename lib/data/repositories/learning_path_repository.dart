@@ -30,12 +30,12 @@ class SupabaseLearningPathRepository implements LearningPathRepository {
   @override
   Future<void> saveNodes(List<LessonNode> nodes) async {
     final String userId = _client.auth.currentUser!.id;
-    for (int i = 0; i < nodes.length; i++) {
+    for (final LessonNode node in nodes) {
       await _client
           .from('lesson_nodes')
-          .update(<String, dynamic>{'status': nodes[i].status.name})
+          .update(<String, dynamic>{'status': node.status.name})
           .eq('user_id', userId)
-          .eq('position', i);
+          .eq('position', node.position);
     }
   }
 }

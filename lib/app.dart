@@ -5,6 +5,7 @@ import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'routes/app_routes.dart';
 import 'screens/login/login_screen.dart';
+import 'screens/lesson/lesson_screen.dart';
 import 'screens/shell/app_shell.dart';
 import 'screens/streak/streak_screen.dart';
 
@@ -23,6 +24,7 @@ class DuolingoApp extends StatelessWidget {
       home: const _AuthGate(),
       routes: <String, WidgetBuilder>{
         AppRoutes.streak: (BuildContext context) => const StreakScreen(),
+        AppRoutes.lesson: (BuildContext context) => const LessonScreen(),
       },
     );
   }
