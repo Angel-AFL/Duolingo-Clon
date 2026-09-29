@@ -13,10 +13,20 @@ class LeagueProvider extends ChangeNotifier {
 
   final LeagueRepository _repository;
 
-  List<LeagueEntry> _entries = List<LeagueEntry>.of(MockData.leagueEntries);
+  List<LeagueEntry> _entries = _sortedByExpDesc(MockData.leagueEntries);
   String _leagueName = MockData.leagueName;
   int _daysLeft = MockData.leagueDaysLeft;
   bool _isLoading = false;
+
+  /// Ordena por EXP descendente (mayor puntaje primero) y recalcula rangos.
+  static List<LeagueEntry> _sortedByExpDesc(List<LeagueEntry> entries) {
+    final List<LeagueEntry> sorted = List<LeagueEntry>.of(entries)
+      ..sort((LeagueEntry a, LeagueEntry b) => b.exp.compareTo(a.exp));
+    for (int i = 0; i < sorted.length; i++) {
+      sorted[i] = sorted[i].copyWith(rank: i + 1);
+    }
+    return sorted;
+  }
 
   String get leagueName => _leagueName;
   int get daysLeft => _daysLeft;
@@ -34,7 +44,7 @@ class LeagueProvider extends ChangeNotifier {
       _leagueName = snapshot.name;
       _daysLeft = snapshot.daysLeft;
       if (snapshot.entries.isNotEmpty) {
-        _entries = List<LeagueEntry>.of(snapshot.entries);
+        _entries = _sortedByExpDesc(snapshot.entries);
       }
     } finally {
       _isLoading = false;
@@ -50,10 +60,7 @@ class LeagueProvider extends ChangeNotifier {
     _entries[index] = _entries[index].copyWith(
       exp: _entries[index].exp + amount,
     );
-    _entries.sort((LeagueEntry a, LeagueEntry b) => b.exp.compareTo(a.exp));
-    for (int i = 0; i < _entries.length; i++) {
-      _entries[i] = _entries[i].copyWith(rank: i + 1);
-    }
+    _entries = _sortedByExpDesc(_entries);
     notifyListeners();
     unawaited(_repository.updateCurrentUserExp(currentUser.exp));
   }

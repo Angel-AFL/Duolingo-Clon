@@ -49,7 +49,7 @@ class SupabaseLeagueRepository implements LeagueRepository {
         .from('league_members')
         .select()
         .eq('league_id', league['id'] as String)
-        .order('rank');
+        .order('exp', ascending: false);
 
     return LeagueSnapshot(
       name: league['name'] as String,
