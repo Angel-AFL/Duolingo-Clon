@@ -11,14 +11,32 @@ class LessonNode {
   const LessonNode({
     required this.type,
     required this.status,
+    this.position = 0,
     this.horizontalOffset = 0,
   });
 
   final LessonNodeType type;
   final LessonNodeStatus status;
 
+  /// Posicion del nodo dentro del camino (0 = primero/arriba).
+  final int position;
+
   /// Desplazamiento horizontal normalizado (-1 a 1) para dibujar el zigzag.
   final double horizontalOffset;
+
+  LessonNode copyWith({
+    LessonNodeType? type,
+    LessonNodeStatus? status,
+    int? position,
+    double? horizontalOffset,
+  }) {
+    return LessonNode(
+      type: type ?? this.type,
+      status: status ?? this.status,
+      position: position ?? this.position,
+      horizontalOffset: horizontalOffset ?? this.horizontalOffset,
+    );
+  }
 
   IconData get icon {
     switch (type) {
@@ -41,6 +59,7 @@ class LessonNode {
     return LessonNode(
       type: LessonNodeType.values.byName(json['type'] as String),
       status: LessonNodeStatus.values.byName(json['status'] as String),
+      position: (json['position'] as num?)?.toInt() ?? 0,
       horizontalOffset: (json['horizontal_offset'] as num).toDouble(),
     );
   }
@@ -48,6 +67,7 @@ class LessonNode {
   Map<String, dynamic> toJson() => <String, dynamic>{
     'type': type.name,
     'status': status.name,
+    'position': position,
     'horizontal_offset': horizontalOffset,
   };
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../core/theme/app_spacing.dart';
 import '../../data/app_constants.dart';
 import '../../models/lesson_node.dart';
-import '../../providers/learning_path_provider.dart';
+import '../../routes/app_routes.dart';
 import 'widgets/lesson_path.dart';
 import 'widgets/section_banner.dart';
 import 'widgets/top_stats_bar.dart';
@@ -17,9 +16,8 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _onNodeTap(BuildContext context, LessonNode node) {
-    if (node.status == LessonNodeStatus.active) {
-      context.read<LearningPathProvider>().completeCurrent();
-    }
+    if (node.status == LessonNodeStatus.locked) return;
+    Navigator.of(context).pushNamed(AppRoutes.lesson, arguments: node.position);
   }
 
   @override

@@ -60,8 +60,20 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   `supabase/migrations/0002_profile_avatar.sql` for the column, bucket and RLS.
 - Auth: `AuthProvider` wraps `AuthRepository`; `AuthGate` in `app.dart` reacts to
   `isAuthenticated`. `LoginScreen` handles email/password sign-in and sign-up.
-- Routes are string constants in `lib/routes/app_routes.dart`. Only `streak` is a
-  named route now; login/shell are chosen by `AuthGate`.
+- Routes are string constants in `lib/routes/app_routes.dart`. Only `streak` and
+  `lesson` are named routes; login/shell are chosen by `AuthGate`. `lesson`
+  receives the node position via `ModalRoute.settings.arguments`.
+- Lecciones: al tocar un nodo `active` o `completed` del home se abre
+  `LessonScreen` (sin bottom nav), que carga los ejercicios de `lesson_exercises`
+  (o `MockData.lessonExercises`) via `LessonProvider`. La barra superior usa
+  `LessonProgressBar`, que avanza al pulsar continuar (no al comprobar) y colorea
+  cada ejercicio (verde acierto, rojo error, gris pendiente). Al terminar siempre
+  suma EXP con `ChallengesProvider.addPoints()`; solo llama a
+  `LearningPathProvider.completeCurrent()` si la leccion jugada era el nodo activo
+  (repetir una completada no avanza el camino). Aplicar
+  `supabase/migrations/0004_lesson_exercises.sql` para la tabla y el seed,
+  `0005_normalize_lesson_nodes.sql` si alguna cuenta tiene el camino invertido, y
+  `0006_reset_lesson_progress.sql` si quedo sin nodo activo (todo `completed`).
 - `AppShell` maps bottom-nav indices to screens: 0 Home, 1 Desafios, 4 Liga,
   5 Perfil. Indices 2/3 have no sketch and are no-ops. Add new tabs there.
 - Adding a provider means registering it in `lib/main.dart` **and** the test
@@ -74,7 +86,7 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   explicit white surface.
 
 ## Testing quirks
-- Tests must supply all 7 providers; `AppShell` uses `IndexedStack`, so every
+- Tests must supply all 8 providers; `AppShell` uses `IndexedStack`, so every
   tab builds even when not selected (missing provider throws regardless). Tests
   use the default `Mock*` repositories, so no Supabase init/network is needed.
 - `test/widget_test.dart` logs in by filling the two `TextField`s and tapping

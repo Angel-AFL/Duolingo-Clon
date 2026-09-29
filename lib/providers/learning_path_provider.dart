@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
 import '../data/mock_data.dart';
@@ -27,29 +25,46 @@ class LearningPathProvider extends ChangeNotifier {
     notifyListeners();
     try {
       final List<LessonNode> nodes = await _repository.fetchNodes();
-      if (nodes.isNotEmpty) _nodes = List<LessonNode>.of(nodes);
+      if (nodes.isNotEmpty) {
+        _nodes = List<LessonNode>.of(nodes)
+          ..sort(
+            (LessonNode a, LessonNode b) => a.position.compareTo(b.position),
+          );
+        _ensureActive();
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  /// Marca el nodo activo como completado y activa el siguiente.
-  void completeCurrent() {
-    final int index = activeIndex;
-    if (index == -1 || index + 1 >= _nodes.length) return;
+  /// Si no hay nodo activo y quedan pendientes, activa el primero.
+  ///
+  /// Corrige datos imperfectos (p. ej. todos en `completed`); no persiste, la
+  /// migracion `0006_reset_lesson_progress.sql` es la que arregla la fila.
+  void _ensureActive() {
+    if (activeIndex != -1) return;
+    final int pending = _nodes.indexWhere(
+      (LessonNode n) => n.status != LessonNodeStatus.completed,
+    );
+    if (pending == -1) return;
+    _nodes[pending] = _nodes[pending].copyWith(status: LessonNodeStatus.active);
+  }
 
-    _nodes[index] = LessonNode(
-      type: _nodes[index].type,
-      status: LessonNodeStatus.completed,
-      horizontalOffset: _nodes[index].horizontalOffset,
-    );
-    _nodes[index + 1] = LessonNode(
-      type: _nodes[index + 1].type,
-      status: LessonNodeStatus.active,
-      horizontalOffset: _nodes[index + 1].horizontalOffset,
-    );
+  /// Marca el nodo activo como completado y activa el siguiente.
+  ///
+  /// Si el activo es el ultimo nodo, solo lo marca como completado.
+  Future<void> completeCurrent() async {
+    final int index = activeIndex;
+    if (index == -1) return;
+
+    _nodes[index] = _nodes[index].copyWith(status: LessonNodeStatus.completed);
+    if (index + 1 < _nodes.length) {
+      _nodes[index + 1] = _nodes[index + 1].copyWith(
+        status: LessonNodeStatus.active,
+      );
+    }
     notifyListeners();
-    unawaited(_repository.saveNodes(_nodes));
+    await _repository.saveNodes(_nodes);
   }
 }

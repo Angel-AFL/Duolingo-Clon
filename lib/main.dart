@@ -10,6 +10,7 @@ import 'data/repositories/challenges_repository.dart';
 import 'data/repositories/friend_streak_repository.dart';
 import 'data/repositories/league_repository.dart';
 import 'data/repositories/learning_path_repository.dart';
+import 'data/repositories/lesson_repository.dart';
 import 'data/repositories/profile_repository.dart';
 import 'data/repositories/streak_repository.dart';
 import 'data/repositories/user_stats_repository.dart';
@@ -17,6 +18,7 @@ import 'providers/auth_provider.dart';
 import 'providers/challenges_provider.dart';
 import 'providers/league_provider.dart';
 import 'providers/learning_path_provider.dart';
+import 'providers/lesson_provider.dart';
 import 'providers/profile_provider.dart';
 import 'providers/streak_provider.dart';
 import 'providers/user_stats_provider.dart';
@@ -63,6 +65,13 @@ Future<void> main() async {
             repository: supabase == null
                 ? null
                 : SupabaseChallengesRepository(supabase),
+          ),
+        ),
+        ChangeNotifierProvider<LessonProvider>(
+          create: (_) => LessonProvider(
+            repository: supabase == null
+                ? null
+                : SupabaseLessonRepository(supabase),
           ),
         ),
         ChangeNotifierProvider<LeagueProvider>(

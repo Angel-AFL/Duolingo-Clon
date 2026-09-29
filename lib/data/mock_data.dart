@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/daily_challenge.dart';
 import '../models/friend_streak.dart';
 import '../models/league_entry.dart';
+import '../models/lesson_exercise.dart';
 import '../models/lesson_node.dart';
 import '../models/profile_info.dart';
 import '../models/streak_calendar.dart';
@@ -26,36 +27,43 @@ abstract final class MockData {
     LessonNode(
       type: LessonNodeType.star,
       status: LessonNodeStatus.active,
+      position: 0,
       horizontalOffset: 0,
     ),
     LessonNode(
       type: LessonNodeType.book,
       status: LessonNodeStatus.locked,
+      position: 1,
       horizontalOffset: 0.45,
     ),
     LessonNode(
       type: LessonNodeType.star,
       status: LessonNodeStatus.locked,
+      position: 2,
       horizontalOffset: 0.12,
     ),
     LessonNode(
       type: LessonNodeType.chest,
       status: LessonNodeStatus.locked,
+      position: 3,
       horizontalOffset: -0.4,
     ),
     LessonNode(
       type: LessonNodeType.headphones,
       status: LessonNodeStatus.locked,
+      position: 4,
       horizontalOffset: 0.22,
     ),
     LessonNode(
       type: LessonNodeType.dumbbell,
       status: LessonNodeStatus.locked,
+      position: 5,
       horizontalOffset: -0.18,
     ),
     LessonNode(
       type: LessonNodeType.dialogue,
       status: LessonNodeStatus.locked,
+      position: 6,
       horizontalOffset: 0.28,
     ),
   ];
@@ -167,6 +175,253 @@ abstract final class MockData {
     FriendStreak(name: 'Carla', days: 201, avatarColor: Color(0xFFD8B4E2)),
     FriendStreak(name: 'Diana', days: 107, avatarColor: Color(0xFF6EC1E4)),
     FriendStreak(name: 'Hugo', days: 14, avatarColor: Color(0xFFE85D5D)),
+  ];
+
+  // --- Ejercicios de las lecciones (espejo del seed de Supabase) ---
+  static const List<LessonExercise> lessonExercises = <LessonExercise>[
+    // Leccion 0: comida
+    LessonExercise(
+      id: 1,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «la manzana»?',
+      options: <String>['the apple', 'the bread', 'the water', 'the milk'],
+      answer: <String>['the apple'],
+    ),
+    LessonExercise(
+      id: 2,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: El niño come pan',
+      options: <String>['The', 'boy', 'eats', 'bread', 'water', 'runs'],
+      answer: <String>['The', 'boy', 'eats', 'bread'],
+    ),
+    LessonExercise(
+      id: 3,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja las palabras',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'agua', right: 'water'),
+        ExercisePair(left: 'leche', right: 'milk'),
+        ExercisePair(left: 'pan', right: 'bread'),
+      ],
+    ),
+    LessonExercise(
+      id: 4,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'Ella ___ una manzana',
+      options: <String>['eat', 'eats', 'eating', 'ate'],
+      answer: <String>['eats'],
+    ),
+
+    // Leccion 1: animales
+    LessonExercise(
+      id: 5,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «el gato»?',
+      options: <String>['the cat', 'the dog', 'the bird', 'the fish'],
+      answer: <String>['the cat'],
+    ),
+    LessonExercise(
+      id: 6,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: La niña tiene un perro',
+      options: <String>['The', 'girl', 'has', 'a', 'dog', 'cat', 'runs'],
+      answer: <String>['The', 'girl', 'has', 'a', 'dog'],
+    ),
+    LessonExercise(
+      id: 7,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja las palabras',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'caballo', right: 'horse'),
+        ExercisePair(left: 'pájaro', right: 'bird'),
+        ExercisePair(left: 'pez', right: 'fish'),
+      ],
+    ),
+    LessonExercise(
+      id: 8,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'El perro ___ en el parque',
+      options: <String>['run', 'runs', 'running', 'ran'],
+      answer: <String>['runs'],
+    ),
+
+    // Leccion 2: familia
+    LessonExercise(
+      id: 9,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «la madre»?',
+      options: <String>[
+        'the mother',
+        'the father',
+        'the sister',
+        'the brother',
+      ],
+      answer: <String>['the mother'],
+    ),
+    LessonExercise(
+      id: 10,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: Mi hermana es médica',
+      options: <String>[
+        'My',
+        'sister',
+        'is',
+        'a',
+        'doctor',
+        'brother',
+        'teacher',
+      ],
+      answer: <String>['My', 'sister', 'is', 'a', 'doctor'],
+    ),
+    LessonExercise(
+      id: 11,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja las palabras',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'padre', right: 'father'),
+        ExercisePair(left: 'hermano', right: 'brother'),
+        ExercisePair(left: 'abuela', right: 'grandmother'),
+      ],
+    ),
+    LessonExercise(
+      id: 12,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'Mi ___ trabaja en casa',
+      options: <String>['father', 'mother', 'parents', 'brothers'],
+      answer: <String>['father'],
+    ),
+
+    // Leccion 3: colores
+    LessonExercise(
+      id: 13,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «rojo»?',
+      options: <String>['red', 'blue', 'green', 'yellow'],
+      answer: <String>['red'],
+    ),
+    LessonExercise(
+      id: 14,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: La flor es amarilla',
+      options: <String>['The', 'flower', 'is', 'yellow', 'red', 'green'],
+      answer: <String>['The', 'flower', 'is', 'yellow'],
+    ),
+    LessonExercise(
+      id: 15,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja los colores',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'azul', right: 'blue'),
+        ExercisePair(left: 'verde', right: 'green'),
+        ExercisePair(left: 'negro', right: 'black'),
+      ],
+    ),
+    LessonExercise(
+      id: 16,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'El cielo es ___',
+      options: <String>['blue', 'red', 'green', 'black'],
+      answer: <String>['blue'],
+    ),
+
+    // Leccion 4: numeros
+    LessonExercise(
+      id: 17,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «tres»?',
+      options: <String>['three', 'two', 'four', 'five'],
+      answer: <String>['three'],
+    ),
+    LessonExercise(
+      id: 18,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: Tengo dos hermanos',
+      options: <String>['I', 'have', 'two', 'brothers', 'three', 'sisters'],
+      answer: <String>['I', 'have', 'two', 'brothers'],
+    ),
+    LessonExercise(
+      id: 19,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja los números',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'uno', right: 'one'),
+        ExercisePair(left: 'cinco', right: 'five'),
+        ExercisePair(left: 'diez', right: 'ten'),
+      ],
+    ),
+    LessonExercise(
+      id: 20,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'Hay ___ manzanas',
+      options: <String>['four', 'for', 'fore', 'fourth'],
+      answer: <String>['four'],
+    ),
+
+    // Leccion 5: acciones
+    LessonExercise(
+      id: 21,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «correr»?',
+      options: <String>['to run', 'to eat', 'to sleep', 'to read'],
+      answer: <String>['to run'],
+    ),
+    LessonExercise(
+      id: 22,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: Ella lee un libro',
+      options: <String>['She', 'reads', 'a', 'book', 'runs', 'writes'],
+      answer: <String>['She', 'reads', 'a', 'book'],
+    ),
+    LessonExercise(
+      id: 23,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja los verbos',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'comer', right: 'to eat'),
+        ExercisePair(left: 'beber', right: 'to drink'),
+        ExercisePair(left: 'dormir', right: 'to sleep'),
+      ],
+    ),
+    LessonExercise(
+      id: 24,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'Nosotros ___ español',
+      options: <String>['speak', 'speaks', 'speaking', 'spoke'],
+      answer: <String>['speak'],
+    ),
+
+    // Leccion 6: sentimientos
+    LessonExercise(
+      id: 25,
+      type: LessonExerciseType.multipleChoice,
+      prompt: '¿Cuál de estas es «feliz»?',
+      options: <String>['happy', 'sad', 'tired', 'angry'],
+      answer: <String>['happy'],
+    ),
+    LessonExercise(
+      id: 26,
+      type: LessonExerciseType.wordBank,
+      prompt: 'Traduce: Estoy muy contento',
+      options: <String>['I', 'am', 'very', 'happy', 'sad', 'tired'],
+      answer: <String>['I', 'am', 'very', 'happy'],
+    ),
+    LessonExercise(
+      id: 27,
+      type: LessonExerciseType.matchPairs,
+      prompt: 'Empareja los sentimientos',
+      pairs: <ExercisePair>[
+        ExercisePair(left: 'triste', right: 'sad'),
+        ExercisePair(left: 'cansado', right: 'tired'),
+        ExercisePair(left: 'enojado', right: 'angry'),
+      ],
+    ),
+    LessonExercise(
+      id: 28,
+      type: LessonExerciseType.fillBlank,
+      prompt: 'Ella está ___ hoy',
+      options: <String>['happy', 'happiness', 'happily', 'happen'],
+      answer: <String>['happy'],
+    ),
   ];
 
   // --- Rachas (boceto `rachas.jpeg`) ---
