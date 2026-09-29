@@ -50,6 +50,21 @@ class LessonProvider extends ChangeNotifier {
   /// Estado de cada ejercicio para la barra de progreso.
   List<bool?> get results => List<bool?>.unmodifiable(_results);
 
+  /// Racha mas larga de aciertos consecutivos de la sesion.
+  int get bestStreak {
+    int best = 0;
+    int current = 0;
+    for (final bool? result in _results) {
+      if (result == true) {
+        current++;
+        if (current > best) best = current;
+      } else {
+        current = 0;
+      }
+    }
+    return best;
+  }
+
   double get progress => _exercises.isEmpty
       ? 0
       : (_results.where((bool? r) => r != null).length / _exercises.length)

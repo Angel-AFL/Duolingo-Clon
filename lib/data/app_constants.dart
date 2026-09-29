@@ -5,8 +5,6 @@ abstract final class AppConstants {
   static const String sectionTitle = 'Parejas: Expresa tus sentimientos';
 
   // --- Desafios ---
-  static const String challengeMonth = 'septiembre';
-  static const int challengeDaysLeft = 21;
   static const String challengePartner = 'Roxsana';
   static const int challengePartnerExp = 422;
 }

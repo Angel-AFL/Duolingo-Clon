@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../data/mock_data.dart';
 import '../data/repositories/challenges_repository.dart';
 import '../models/daily_challenge.dart';
+import '../models/lesson_outcome.dart';
 
 /// Estado de los desafios: puntos del mes y retos del dia.
 class ChallengesProvider extends ChangeNotifier {
@@ -12,6 +13,12 @@ class ChallengesProvider extends ChangeNotifier {
     : _repository = repository ?? MockChallengesRepository();
 
   final ChallengesRepository _repository;
+
+  /// Racha minima de aciertos para avanzar un reto de tipo `streak`.
+  static const int _streakThreshold = 3;
+
+  /// Precision minima para avanzar un reto de tipo `accuracy`.
+  static const double _accuracyThreshold = 0.9;
 
   int _points = MockData.challengePoints;
   int _pointsTarget = MockData.challengePointsTarget;
@@ -44,16 +51,28 @@ class ChallengesProvider extends ChangeNotifier {
     }
   }
 
-  /// Suma puntos de desafio (sin pasar de la meta) y avanza los retos.
-  void addPoints(int amount) {
-    _points = (_points + amount).clamp(0, _pointsTarget);
+  /// Registra una leccion: suma su EXP al desafio del mes y avanza cada reto
+  /// segun su metrica real (EXP ganado, racha de aciertos o precision).
+  void recordLesson(LessonOutcome outcome) {
+    _points = (_points + outcome.exp).clamp(0, _pointsTarget);
     for (int i = 0; i < _challenges.length; i++) {
       final DailyChallenge challenge = _challenges[i];
-      if (!challenge.isComplete) {
-        _challenges[i] = challenge.copyWith(
-          progress: (challenge.progress + 1).clamp(0, challenge.target),
-        );
+      if (challenge.isComplete) continue;
+
+      final int increment;
+      switch (challenge.metric) {
+        case ChallengeMetric.exp:
+          increment = outcome.exp;
+        case ChallengeMetric.streak:
+          increment = outcome.bestStreak >= _streakThreshold ? 1 : 0;
+        case ChallengeMetric.accuracy:
+          increment = outcome.accuracy >= _accuracyThreshold ? 1 : 0;
       }
+      if (increment <= 0) continue;
+
+      _challenges[i] = challenge.copyWith(
+        progress: (challenge.progress + increment).clamp(0, challenge.target),
+      );
     }
     notifyListeners();
     unawaited(_repository.saveChallenges(_points, _challenges));

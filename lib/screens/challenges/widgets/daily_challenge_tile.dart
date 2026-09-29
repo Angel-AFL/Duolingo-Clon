@@ -29,21 +29,27 @@ class DailyChallengeTile extends StatelessWidget {
               ProgressBar(
                 value: challenge.progress.toDouble(),
                 target: challenge.target.toDouble(),
+                unit: challenge.metric == ChallengeMetric.exp ? 'EXP' : null,
+                showCompletionIcon: true,
               ),
             ],
           ),
         ),
         const SizedBox(width: AppSpacing.s16),
-        _RewardChest(reward: challenge.reward),
+        _RewardChest(
+          reward: challenge.reward,
+          isComplete: challenge.isComplete,
+        ),
       ],
     );
   }
 }
 
 class _RewardChest extends StatelessWidget {
-  const _RewardChest({required this.reward});
+  const _RewardChest({required this.reward, required this.isComplete});
 
   final ChallengeReward reward;
+  final bool isComplete;
 
   Color get _color {
     switch (reward) {
@@ -63,12 +69,15 @@ class _RewardChest extends StatelessWidget {
       height: 48,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: _color,
+        color: isComplete ? _color.withValues(alpha: 0.35) : _color,
         borderRadius: BorderRadius.circular(AppRadius.standard),
+        border: isComplete
+            ? Border.all(color: AppColors.eagerGreen, width: 2)
+            : null,
       ),
-      child: const Icon(
-        Icons.inventory_2_rounded,
-        color: AppColors.paperWhite,
+      child: Icon(
+        isComplete ? Icons.check_circle_rounded : Icons.inventory_2_rounded,
+        color: isComplete ? AppColors.eagerGreen : AppColors.paperWhite,
         size: 26,
       ),
     );

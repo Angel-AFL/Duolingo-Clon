@@ -68,18 +68,22 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   (o `MockData.lessonExercises`) via `LessonProvider`. La barra superior usa
   `LessonProgressBar`, que avanza al pulsar continuar (no al comprobar) y colorea
   cada ejercicio (verde acierto, rojo error, gris pendiente). Al terminar siempre
-  suma EXP con `ChallengesProvider.addPoints()`; solo llama a
+  suma EXP con `ChallengesProvider.recordLesson(LessonOutcome)` (que avanza cada
+  reto segun su metrica `exp`/`streak`/`accuracy`), y tambien con
+  `ProfileProvider.addExp()` y `LeagueProvider.addExp()`; solo llama a
   `LearningPathProvider.completeCurrent()` si la leccion jugada era el nodo activo
   (repetir una completada no avanza el camino). Aplicar
   `supabase/migrations/0004_lesson_exercises.sql` para la tabla y el seed,
   `0005_normalize_lesson_nodes.sql` si alguna cuenta tiene el camino invertido, y
   `0006_reset_lesson_progress.sql` si quedo sin nodo activo (todo `completed`).
+  `0007_challenge_metrics.sql` agrega `daily_challenges.metric` y ajusta el seed.
 - `AppShell` maps bottom-nav indices to screens: 0 Home, 1 Desafios, 4 Liga,
   5 Perfil. Indices 2/3 have no sketch and are no-ops. Add new tabs there.
 - Adding a provider means registering it in `lib/main.dart` **and** the test
   helper in `test/widget_test.dart`.
-- Static, non-user strings (section banner, challenge month/partner) live in
-  `lib/data/app_constants.dart`, not in the DB.
+- Static, non-user strings (section banner, challenge partner) live in
+  `lib/data/app_constants.dart`, not in the DB. El mes y los días restantes del
+  desafío se calculan con la fecha actual (`lib/core/utils/formatters.dart`).
 - Shared widgets in `lib/widgets/`; screen-specific sub-widgets in
   `lib/screens/<feature>/widgets/`.
 - `app.dart` sets `themeMode: ThemeMode.dark`; `LoginScreen` overrides with an
