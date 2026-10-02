@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/theme/app_spacing.dart';
 import '../../../models/lesson_node.dart';
 import '../../../providers/learning_path_provider.dart';
 import '../../../widgets/duo_mascot.dart';
 import 'lesson_node_tile.dart';
+import 'lesson_path_painter.dart';
 
-/// Camino sinuoso de lecciones con la mascota a un costado.
+/// Camino sinuoso de lecciones con sendero y mascota.
 class LessonPath extends StatelessWidget {
   const LessonPath({super.key, this.onNodeTap});
 
   final ValueChanged<LessonNode>? onNodeTap;
+
+  /// Distancia vertical entre centros de nodos.
+  static const double rowHeight = 118;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +23,20 @@ class LessonPath extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: <Widget>[
+        Positioned.fill(
+          child: CustomPaint(
+            painter: LessonPathPainter(
+              nodes: nodes,
+              rowHeight: rowHeight,
+              nodeSize: LessonNodeTile.size,
+            ),
+          ),
+        ),
         Column(
           children: <Widget>[
             for (final LessonNode node in nodes)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
+              SizedBox(
+                height: rowHeight,
                 child: LessonNodeTile(
                   node: node,
                   onTap: onNodeTap == null ? null : () => onNodeTap!(node),
@@ -32,7 +44,11 @@ class LessonPath extends StatelessWidget {
               ),
           ],
         ),
-        const Positioned(left: 0, top: 130, child: DuoMascot(size: 108)),
+        Positioned(
+          left: 4,
+          top: rowHeight * 1.4,
+          child: const DuoMascot(size: 104),
+        ),
       ],
     );
   }

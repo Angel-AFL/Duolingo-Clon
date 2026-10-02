@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_spacing.dart';
 import '../models/nav_item.dart';
+import 'duo_nav_icon.dart';
 
 /// Barra de navegacion inferior de la app (tema oscuro).
 ///
-/// El item activo se marca con un contorno de 12px de radio en su color de
-/// acento, como en los bocetos.
+/// El item activo se marca con un contorno redondeado cian, como en el
+/// Duolingo original.
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     super.key,
@@ -71,14 +72,13 @@ class _NavButton extends StatelessWidget {
             height: 44,
             decoration: selected
                 ? BoxDecoration(
-                    border: Border.all(color: item.color, width: 2),
+                    border: Border.all(color: AppColors.sparkBlue, width: 2),
                     borderRadius: BorderRadius.circular(AppRadius.standard),
                   )
                 : null,
-            child: Icon(
-              item.icon,
-              size: 28,
-              color: selected ? item.color : item.color.withValues(alpha: 0.55),
+            child: Opacity(
+              opacity: selected ? 1 : 0.55,
+              child: DuoNavIcon(type: item.icon, size: 30),
             ),
           ),
         ),

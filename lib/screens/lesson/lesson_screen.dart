@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -12,6 +13,9 @@ import '../../providers/league_provider.dart';
 import '../../providers/learning_path_provider.dart';
 import '../../providers/lesson_provider.dart';
 import '../../providers/profile_provider.dart';
+import '../../providers/user_stats_provider.dart';
+import '../../widgets/duo_button.dart';
+import '../../widgets/duo_mascot.dart';
 import '../../widgets/primary_button.dart';
 import 'widgets/fill_blank_exercise.dart';
 import 'widgets/lesson_feedback_bar.dart';
@@ -37,6 +41,8 @@ class _LessonScreenState extends State<LessonScreen> {
   /// Posicion de la leccion que se esta jugando.
   int _position = 0;
 
+  LessonProvider? _lesson;
+
   @override
   void initState() {
     super.initState();
@@ -44,8 +50,28 @@ class _LessonScreenState extends State<LessonScreen> {
       if (!mounted) return;
       final Object? args = ModalRoute.of(context)?.settings.arguments;
       _position = args is int ? args : 0;
-      context.read<LessonProvider>().start(_position);
+      final LessonProvider lesson = context.read<LessonProvider>();
+      lesson.onChecked = _onChecked;
+      _lesson = lesson;
+      lesson.start(_position);
     });
+  }
+
+  @override
+  void dispose() {
+    _lesson?.onChecked = null;
+    super.dispose();
+  }
+
+  /// Vibra y resta un corazon cuando el ejercicio comprobado es incorrecto.
+  void _onChecked(bool correct) {
+    if (!mounted) return;
+    if (correct) {
+      HapticFeedback.lightImpact();
+      return;
+    }
+    HapticFeedback.mediumImpact();
+    context.read<UserStatsProvider>().consumeHeart();
   }
 
   /// Suma EXP siempre; avanza el camino solo si se jugo el nodo activo.
@@ -89,19 +115,32 @@ class _LessonScreenState extends State<LessonScreen> {
   @override
   Widget build(BuildContext context) {
     final LessonProvider provider = context.watch<LessonProvider>();
+    final UserStatsProvider stats = context.watch<UserStatsProvider>();
 
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: <Widget>[
-            _TopBar(provider: provider),
-            Expanded(child: _body(provider)),
-            _footer(provider),
-          ],
-        ),
-      ),
+      body: SafeArea(bottom: false, child: _bodyFor(context, provider, stats)),
+    );
+  }
+
+  Widget _bodyFor(
+    BuildContext context,
+    LessonProvider provider,
+    UserStatsProvider stats,
+  ) {
+    if (stats.isOutOfHearts && !provider.isFinished && provider.total > 0) {
+      return _OutOfHeartsView(
+        onRefill: stats.refillHearts,
+        onExit: () => Navigator.of(context).maybePop(),
+      );
+    }
+
+    return Column(
+      children: <Widget>[
+        _TopBar(provider: provider, stats: stats),
+        Expanded(child: _body(provider)),
+        _footer(provider),
+      ],
     );
   }
 
@@ -186,12 +225,15 @@ class _LessonScreenState extends State<LessonScreen> {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({required this.provider});
+  const _TopBar({required this.provider, required this.stats});
 
   final LessonProvider provider;
+  final UserStatsProvider stats;
 
   @override
   Widget build(BuildContext context) {
+    final String hearts = stats.hasUnlimitedHearts ? '∞' : '${stats.hearts}';
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.s8,
@@ -207,15 +249,69 @@ class _TopBar extends StatelessWidget {
           ),
           Expanded(child: LessonProgressBar(results: provider.results)),
           const SizedBox(width: AppSpacing.s16),
-          const Icon(
-            Icons.bolt_rounded,
-            color: AppColors.superViolet,
-            size: 24,
+          Semantics(
+            label: AppLocalizations.of(context).a11yHearts(hearts),
+            child: Row(
+              children: <Widget>[
+                const Icon(
+                  Icons.favorite_rounded,
+                  color: AppColors.heartPink,
+                  size: 24,
+                ),
+                const SizedBox(width: AppSpacing.unit),
+                Text(
+                  hearts,
+                  style: AppTypography.statValue(color: AppColors.heartPink),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(width: AppSpacing.unit),
+        ],
+      ),
+    );
+  }
+}
+
+/// Vista bloqueante cuando el usuario se queda sin corazones.
+class _OutOfHeartsView extends StatelessWidget {
+  const _OutOfHeartsView({required this.onRefill, required this.onExit});
+
+  final VoidCallback onRefill;
+  final VoidCallback onExit;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.s24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const DuoMascot(size: 130),
+          const SizedBox(height: AppSpacing.s24),
           Text(
-            '∞',
-            style: AppTypography.statValue(color: AppColors.superViolet),
+            l10n.noHeartsTitle,
+            textAlign: TextAlign.center,
+            style: AppTypography.headingSm(color: AppColors.paperWhite),
+          ),
+          const SizedBox(height: AppSpacing.s8),
+          Text(
+            l10n.noHeartsBody,
+            textAlign: TextAlign.center,
+            style: AppTypography.body(color: AppColors.pencilGray),
+          ),
+          const SizedBox(height: AppSpacing.s32),
+          DuoButton(
+            label: l10n.refillHearts,
+            icon: Icons.favorite_rounded,
+            onPressed: onRefill,
+          ),
+          const SizedBox(height: AppSpacing.s16),
+          DuoButton(
+            label: l10n.exitLesson,
+            variant: DuoButtonVariant.secondary,
+            onPressed: onExit,
           ),
         ],
       ),

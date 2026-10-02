@@ -2,8 +2,10 @@
 
 Flutter app (Dart `^3.12.0`, Flutter 3.44) that clones the Duolingo mobile UI.
 `docs/` holds 5 hand-drawn sketches (home, liga, desafios, perfil, rachas)
-and is the **source of truth for UI**. Login + the 4 main tabs are implemented
-through `AppShell`. Data comes from **Supabase** through repositories
+and is the **source of truth for UI**, pero donde el boceto difiera del
+Duolingo real **manda el Duolingo real** (relieve 3D, burbuja EMPEZAR,
+sendero del camino, banda de feedback solida, corazones). Login + the 4 main
+tabs are implemented through `AppShell`. Data comes from **Supabase** through repositories
 (`lib/data/repositories/`); `lib/data/mock_data.dart` is kept only as the
 offline fallback used by the `Mock*` repositories and as the initial provider
 state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
@@ -29,7 +31,17 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   screens in `docs/` are **dark**, so `lib/core/theme/app_colors.dart` adds a
   documented `dark*` extension. Login stays light, app screens dark.
 - Never hardcode colors/spacing/text styles. Use `AppColors`, `AppTypography`,
-  `AppSpacing`/`AppRadius` (`lib/core/theme/`). Radii are always 12px.
+  `AppSpacing`/`AppRadius` (`lib/core/theme/`). Radii son 12px (componentes)
+  o 16px (`AppRadius.button`) para botones/fichas.
+- **Relieve 3D**: los botones y fichas usan el lip solido de Duolingo (borde
+  inferior `0 4px 0` en un tono mas oscuro, `AppSpacing.lip` + `*Lip`). Usa
+  `DuoButton` (`lib/widgets/duo_button.dart`; variantes primary/secondary/
+  secondaryError/error/streak/blue/purple) y `DuoChoiceTile`
+  (`lib/widgets/duo_choice_tile.dart`) para ejercicios. `PrimaryButton`/
+  `SecondaryButton` son wrappers de `DuoButton`. El lip se colapsa al pulsar.
+- **Iconos del nav**: `DuoNavIcon` (`lib/widgets/duo_nav_icon.dart`) dibuja los
+  iconos multicolor de Duolingo con `CustomPaint` (casa, mision, trofeo, persona);
+  `starPath` es un helper reutilizable. No usa `IconData`.
 - Skill fonts `feather` / `duolingo-sans` are substituted with **Nunito** via
   `google_fonts`. In widget tests set
   `GoogleFonts.config.allowRuntimeFetching = false` (see `test/widget_test.dart`).
@@ -60,6 +72,11 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   rendered from `lib/models/avatar_preset.dart`. `avatar_url` may hold an
   `https://` URL, an `assets/...` path, or a `preset:<id>` key. Apply
   `supabase/migrations/0002_profile_avatar.sql` for the column, bucket and RLS.
+- Perfil (vitrina): `ProfileScreen` mantiene la cabecera amarilla y añade Súper
+  familia (`SuperFamilyRow`), Medallas mensuales (`MedalsRow`) y Logros
+  (`AchievementsRow`); los datos estaticos viven en `MockData.profileShowcase`
+  (`lib/models/profile_showcase.dart`). Son placeholders (`AvatarCircle`/`Icon`),
+  no hay assets de personajes.
 - Auth: `AuthProvider` wraps `AuthRepository`; `AuthGate` in `app.dart` reacts to
   `isAuthenticated`. `LoginScreen` handles email/password sign-in and sign-up.
   Cerrar sesion se dispara desde el boton al final del perfil (con confirmacion).
@@ -70,7 +87,11 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   `LessonScreen` (sin bottom nav), que carga los ejercicios de `lesson_exercises`
   (o `MockData.lessonExercises`) via `LessonProvider`. La barra superior usa
   `LessonProgressBar`, que avanza al pulsar continuar (no al comprobar) y colorea
-  cada ejercicio (verde acierto, rojo error, gris pendiente). Al terminar siempre
+  cada ejercicio (verde acierto, rojo error, gris pendiente). La top bar muestra
+  los corazones de `UserStatsProvider`; cada error consume uno (`onChecked` en
+  `LessonProvider`) y a 0 se bloquea la leccion con la vista sin corazones
+  (RECARGAR/SALIR). El feedback es una banda solida verde/roja
+  (`LessonFeedbackBar`) con boton 3D. Al terminar siempre
   suma EXP con `ChallengesProvider.recordLesson(LessonOutcome)` (que avanza cada
   reto segun su metrica `exp`/`streak`/`accuracy`), y tambien con
   `ProfileProvider.addExp()` y `LeagueProvider.addExp()`; solo llama a
@@ -80,6 +101,10 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   `0005_normalize_lesson_nodes.sql` si alguna cuenta tiene el camino invertido, y
   `0006_reset_lesson_progress.sql` si quedo sin nodo activo (todo `completed`).
   `0007_challenge_metrics.sql` agrega `daily_challenges.metric` y ajusta el seed.
+- Desafios: `ChallengesScreen` usa la cabecera naranja (`ChallengesHeader`) y la
+  seccion `FriendChallengeCard` (reto de EXP entre amigos: Tú vs. partner, meta,
+  cofre y botones DAR TOQUE/ENVIADO). Los valores estaticos viven en
+  `AppConstants` y el estado `cheered`/`gifted` en `ChallengesProvider`.
 - Estado de carga/error: los providers usan el mixin `LoadableProvider`
   (`lib/providers/loadable_provider.dart`) que expone `isLoading`/`hasLoaded`/
   `hasError`/`error` (y `hasWriteError`/`writeError` para guardados). Las
@@ -96,8 +121,15 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   centralizan en `lib/core/theme/app_theme.dart`; los widgets no repiten estilos.
 - Accesibilidad: controles solo-icono y `GestureDetector` llevan
   `Semantics`/`Tooltip` (nav, nodos, presets de avatar, chips, rachas).
-- `AppShell` maps bottom-nav indices to screens: 0 Home, 1 Desafios, 4 Liga,
-  5 Perfil. Indices 2/3 have no sketch and are no-ops. Add new tabs there.
+- `AppShell` tiene 4 pestanas (0 Home, 1 Desafios, 2 Liga, 3 Perfil) y el
+  indice del nav es directamente el de la pantalla. Los iconos son dibujados
+  con `DuoNavIcon` (`lib/widgets/duo_nav_icon.dart`), no `IconData`. Add new
+  tabs there (y en `NavItem`/l10n).
+- Home: `HomeScreen` usa `CustomScrollView` con el banner de seccion fijo
+  (`SliverPersistentHeader`) y `LessonPath`, que pinta el sendero con
+  `LessonPathPainter` y nodos 3D (`LessonNodeTile`). El nodo activo late
+  (1.0->1.05 cada 1.6s) y muestra la burbuja EMPEZAR; respeta "reducir
+  movimiento" (`MediaQuery.disableAnimations`) para no bloquear `pumpAndSettle`.
 - Adding a provider means registering it in `lib/main.dart` **and** the test
   helper in `test/widget_test.dart`.
 - Static, non-user strings (section banner, challenge partner) live in
@@ -117,6 +149,13 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
 - `SectionLabel` renders `.toUpperCase()` — match finders to the uppercase text.
 - Tall screens (profile) push content off the 800x600 test surface; set
   `tester.view.physicalSize` (see the profile test) or scroll.
+- `setUpAll` sets `accessibilityFeaturesTestValue.disableAnimations = true`:
+  sin eso el pulso del nodo activo impide que `pumpAndSettle` termine.
+- El banco de palabras puede quedar bajo el pie en la superficie de test; usa
+  `tester.ensureVisible` antes de tocar fichas.
+- El usuario mock es Súper (`hasUnlimitedHearts`), asi que los corazones no
+  bajan por defecto; los tests de corazones inyectan un `UserStatsRepository`
+  sin Súper (ver `_appWithStats`).
 
 ## Gotchas
 - The Duo mascot is a `CustomPaint` placeholder. To use a real image, set

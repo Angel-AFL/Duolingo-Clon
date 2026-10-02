@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/nav_item.dart';
+import '../../widgets/duo_nav_icon.dart';
 import '../../providers/challenges_provider.dart';
 import '../../providers/league_provider.dart';
 import '../../providers/learning_path_provider.dart';
@@ -18,8 +19,7 @@ import '../profile/profile_screen.dart';
 
 /// Contenedor de las pestanas principales con bottom nav compartido.
 ///
-/// Mapea los 6 items del nav a las 4 pantallas implementadas; los items sin
-/// boceto (indices 2 y 3) quedan deshabilitados.
+/// El nav tiene las 4 pestanas implementadas (Home, Desafios, Liga, Perfil).
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -51,36 +51,10 @@ class _AppShellState extends State<AppShell> {
   }
 
   List<NavItem> _navItems(AppLocalizations l10n) => <NavItem>[
-    NavItem(
-      icon: Icons.home_rounded,
-      color: AppColors.streakOrange,
-      label: l10n.navHome,
-    ),
-    NavItem(
-      icon: Icons.fitness_center_rounded,
-      color: AppColors.streakOrange,
-      label: l10n.navPractice,
-    ),
-    NavItem(
-      icon: Icons.diamond_rounded,
-      color: AppColors.gemBlue,
-      label: l10n.navGems,
-    ),
-    NavItem(
-      icon: Icons.favorite_rounded,
-      color: AppColors.heartPink,
-      label: l10n.navHearts,
-    ),
-    NavItem(
-      icon: Icons.emoji_events_rounded,
-      color: AppColors.sparkBlue,
-      label: l10n.navLeague,
-    ),
-    NavItem(
-      icon: Icons.more_horiz_rounded,
-      color: AppColors.leaguePurple,
-      label: l10n.navMore,
-    ),
+    NavItem(icon: DuoNavIconType.home, label: l10n.navHome),
+    NavItem(icon: DuoNavIconType.challenges, label: l10n.navChallenges),
+    NavItem(icon: DuoNavIconType.league, label: l10n.navLeague),
+    NavItem(icon: DuoNavIconType.profile, label: l10n.navProfile),
   ];
 
   static const List<Widget> _screens = <Widget>[
@@ -90,24 +64,7 @@ class _AppShellState extends State<AppShell> {
     ProfileScreen(),
   ];
 
-  /// Indice de pantalla para un item del nav, o `null` si no tiene pantalla.
-  int? _screenIndexFor(int navIndex) {
-    switch (navIndex) {
-      case 0:
-        return 0;
-      case 1:
-        return 1;
-      case 4:
-        return 2;
-      case 5:
-        return 3;
-      default:
-        return null;
-    }
-  }
-
   void _onNavTap(int navIndex) {
-    if (_screenIndexFor(navIndex) == null) return;
     setState(() => _selectedIndex = navIndex);
   }
 
@@ -115,10 +72,7 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
-      body: IndexedStack(
-        index: _screenIndexFor(_selectedIndex) ?? 0,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: AppBottomNav(
         items: _navItems(AppLocalizations.of(context)),
         selectedIndex: _selectedIndex,

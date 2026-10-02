@@ -184,6 +184,36 @@ abstract class AppLocalizations {
   /// **'Dar regalo'**
   String get giveGift;
 
+  /// No description provided for @friendChallenge.
+  ///
+  /// In es, this message translates to:
+  /// **'Desafío entre amigos'**
+  String get friendChallenge;
+
+  /// No description provided for @friendChallengeHours.
+  ///
+  /// In es, this message translates to:
+  /// **'1H'**
+  String get friendChallengeHours;
+
+  /// No description provided for @sent.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviado'**
+  String get sent;
+
+  /// No description provided for @you.
+  ///
+  /// In es, this message translates to:
+  /// **'Tú'**
+  String get you;
+
+  /// No description provided for @earnExp.
+  ///
+  /// In es, this message translates to:
+  /// **'Gana {target} EXP'**
+  String earnExp(int target);
+
   /// No description provided for @dailyChallenges.
   ///
   /// In es, this message translates to:
@@ -193,7 +223,7 @@ abstract class AppLocalizations {
   /// No description provided for @hoursLeft.
   ///
   /// In es, this message translates to:
-  /// **'12H'**
+  /// **'3H'**
   String get hoursLeft;
 
   /// No description provided for @emptyChallenges.
@@ -279,6 +309,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Administrar'**
   String get manage;
+
+  /// No description provided for @addMember.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar miembro'**
+  String get addMember;
+
+  /// No description provided for @monthlyMedals.
+  ///
+  /// In es, this message translates to:
+  /// **'Medallas mensuales'**
+  String get monthlyMedals;
+
+  /// No description provided for @achievements.
+  ///
+  /// In es, this message translates to:
+  /// **'Logros'**
+  String get achievements;
 
   /// No description provided for @courses.
   ///
@@ -448,6 +496,12 @@ abstract class AppLocalizations {
   /// **'D,L,Ma,Mi,J,V,S'**
   String get weekdays;
 
+  /// No description provided for @start.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar'**
+  String get start;
+
   /// No description provided for @check.
   ///
   /// In es, this message translates to:
@@ -471,6 +525,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Continuar'**
   String get continueLabel;
+
+  /// No description provided for @noHeartsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Te quedaste sin corazones!'**
+  String get noHeartsTitle;
+
+  /// No description provided for @noHeartsBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Recarga tus corazones para seguir practicando.'**
+  String get noHeartsBody;
+
+  /// No description provided for @refillHearts.
+  ///
+  /// In es, this message translates to:
+  /// **'Recargar'**
+  String get refillHearts;
+
+  /// No description provided for @exitLesson.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir'**
+  String get exitLesson;
+
+  /// No description provided for @a11yHearts.
+  ///
+  /// In es, this message translates to:
+  /// **'Corazones: {count}'**
+  String a11yHearts(String count);
 
   /// No description provided for @lessonComplete.
   ///
@@ -532,23 +616,11 @@ abstract class AppLocalizations {
   /// **'Inicio'**
   String get navHome;
 
-  /// No description provided for @navPractice.
+  /// No description provided for @navChallenges.
   ///
   /// In es, this message translates to:
-  /// **'Práctica'**
-  String get navPractice;
-
-  /// No description provided for @navGems.
-  ///
-  /// In es, this message translates to:
-  /// **'Gemas'**
-  String get navGems;
-
-  /// No description provided for @navHearts.
-  ///
-  /// In es, this message translates to:
-  /// **'Corazones'**
-  String get navHearts;
+  /// **'Desafíos'**
+  String get navChallenges;
 
   /// No description provided for @navLeague.
   ///
@@ -556,11 +628,11 @@ abstract class AppLocalizations {
   /// **'Liga'**
   String get navLeague;
 
-  /// No description provided for @navMore.
+  /// No description provided for @navProfile.
   ///
   /// In es, this message translates to:
-  /// **'Más'**
-  String get navMore;
+  /// **'Perfil'**
+  String get navProfile;
 
   /// No description provided for @a11yLessonNode.
   ///

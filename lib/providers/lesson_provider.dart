@@ -33,6 +33,9 @@ class LessonProvider extends ChangeNotifier {
   String? _wrongRight;
   Timer? _wrongTimer;
 
+  /// Notifica cada comprobacion para que la UI reaccione (p. ej. corazones).
+  void Function(bool correct)? onChecked;
+
   List<LessonExercise> get exercises =>
       List<LessonExercise>.unmodifiable(_exercises);
   bool get isLoading => _isLoading;
@@ -208,6 +211,7 @@ class LessonProvider extends ChangeNotifier {
     _isAnswered = true;
     _isCorrect = correct;
     if (correct) _correctCount++;
+    onChecked?.call(correct);
     notifyListeners();
   }
 

@@ -54,10 +54,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get giveGift => 'Dar regalo';
 
   @override
+  String get friendChallenge => 'Desafío entre amigos';
+
+  @override
+  String get friendChallengeHours => '1H';
+
+  @override
+  String get sent => 'Enviado';
+
+  @override
+  String get you => 'Tú';
+
+  @override
+  String earnExp(int target) {
+    return 'Gana $target EXP';
+  }
+
+  @override
   String get dailyChallenges => 'Desafíos del día';
 
   @override
-  String get hoursLeft => '12H';
+  String get hoursLeft => '3H';
 
   @override
   String get emptyChallenges => 'No hay desafíos activos por ahora';
@@ -110,6 +127,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get manage => 'Administrar';
+
+  @override
+  String get addMember => 'Agregar miembro';
+
+  @override
+  String get monthlyMedals => 'Medallas mensuales';
+
+  @override
+  String get achievements => 'Logros';
 
   @override
   String get courses => 'Cursos';
@@ -208,6 +234,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get weekdays => 'D,L,Ma,Mi,J,V,S';
 
   @override
+  String get start => 'Empezar';
+
+  @override
   String get check => 'Comprobar';
 
   @override
@@ -218,6 +247,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get continueLabel => 'Continuar';
+
+  @override
+  String get noHeartsTitle => '¡Te quedaste sin corazones!';
+
+  @override
+  String get noHeartsBody => 'Recarga tus corazones para seguir practicando.';
+
+  @override
+  String get refillHearts => 'Recargar';
+
+  @override
+  String get exitLesson => 'Salir';
+
+  @override
+  String a11yHearts(String count) {
+    return 'Corazones: $count';
+  }
 
   @override
   String get lessonComplete => '¡Lección completada!';
@@ -251,19 +297,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navHome => 'Inicio';
 
   @override
-  String get navPractice => 'Práctica';
-
-  @override
-  String get navGems => 'Gemas';
-
-  @override
-  String get navHearts => 'Corazones';
+  String get navChallenges => 'Desafíos';
 
   @override
   String get navLeague => 'Liga';
 
   @override
-  String get navMore => 'Más';
+  String get navProfile => 'Perfil';
 
   @override
   String a11yLessonNode(int position) {
