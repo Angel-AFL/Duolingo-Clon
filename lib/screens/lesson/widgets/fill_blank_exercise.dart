@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/lesson_exercise.dart';
 import '../../../providers/lesson_provider.dart';
 import 'exercise_option_tile.dart';
@@ -22,7 +23,7 @@ class FillBlankExercise extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.s16),
       children: <Widget>[
         Text(
-          'Completa la oración',
+          AppLocalizations.of(context).completeSentence,
           style: AppTypography.label(color: AppColors.pencilGray),
         ),
         const SizedBox(height: AppSpacing.s12),

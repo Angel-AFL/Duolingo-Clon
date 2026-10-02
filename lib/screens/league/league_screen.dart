@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/league_entry.dart';
 import '../../providers/league_provider.dart';
 import '../../widgets/error_retry_view.dart';
@@ -22,16 +23,20 @@ class LeagueScreen extends StatelessWidget {
     return Column(
       children: <Widget>[
         LeagueHeader(title: league.leagueName, daysLeft: league.daysLeft),
-        Expanded(child: _body(league, entries)),
+        Expanded(child: _body(context, league, entries)),
       ],
     );
   }
 
-  Widget _body(LeagueProvider league, List<LeagueEntry> entries) {
+  Widget _body(
+    BuildContext context,
+    LeagueProvider league,
+    List<LeagueEntry> entries,
+  ) {
     if (!league.hasLoaded) {
       if (league.hasError) {
         return ErrorRetryView(
-          title: 'No se pudo cargar la liga',
+          title: AppLocalizations.of(context).leagueLoadError,
           message: league.error,
           onRetry: league.load,
         );

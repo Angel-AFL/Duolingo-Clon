@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Cabecera con gradiente de la liga (boceto `liga.jpeg`).
 class LeagueHeader extends StatelessWidget {
@@ -51,7 +52,7 @@ class LeagueHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   Text(
-                    '$daysLeft DÍAS',
+                    AppLocalizations.of(context).daysLeftShort(daysLeft),
                     style: AppTypography.label(color: AppColors.paperWhite),
                   ),
                 ],

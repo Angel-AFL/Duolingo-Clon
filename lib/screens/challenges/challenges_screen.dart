@@ -6,6 +6,7 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/app_constants.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/daily_challenge.dart';
 import '../../providers/challenges_provider.dart';
 import '../../widgets/error_retry_view.dart';
@@ -21,6 +22,7 @@ class ChallengesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ChallengesProvider challenges = context.watch<ChallengesProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final DateTime now = DateTime.now();
 
     return Column(
@@ -31,16 +33,20 @@ class ChallengesScreen extends StatelessWidget {
           points: challenges.points,
           pointsTarget: challenges.pointsTarget,
         ),
-        Expanded(child: _body(challenges)),
+        Expanded(child: _body(context, challenges, l10n)),
       ],
     );
   }
 
-  Widget _body(ChallengesProvider challenges) {
+  Widget _body(
+    BuildContext context,
+    ChallengesProvider challenges,
+    AppLocalizations l10n,
+  ) {
     if (!challenges.hasLoaded) {
       if (challenges.hasError) {
         return ErrorRetryView(
-          title: 'No se pudieron cargar los desafíos',
+          title: l10n.challengesLoadError,
           message: challenges.error,
           onRetry: challenges.load,
         );
@@ -68,7 +74,7 @@ class ChallengesScreen extends StatelessWidget {
             Expanded(
               child: _ActionButton(
                 emoji: '👋',
-                label: 'Dar toque',
+                label: l10n.giveCheer,
                 onPressed: challenges.giveCheer,
               ),
             ),
@@ -76,7 +82,7 @@ class ChallengesScreen extends StatelessWidget {
             Expanded(
               child: _ActionButton(
                 emoji: '🎁',
-                label: 'Dar regalo',
+                label: l10n.giveGift,
                 onPressed: challenges.giveGift,
               ),
             ),
@@ -86,7 +92,7 @@ class ChallengesScreen extends StatelessWidget {
         const Divider(color: AppColors.darkBorder, height: 1),
         const SizedBox(height: AppSpacing.s24),
         SectionLabel(
-          label: 'Desafíos del día',
+          label: l10n.dailyChallenges,
           trailing: Row(
             children: <Widget>[
               const Icon(
@@ -96,7 +102,7 @@ class ChallengesScreen extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.unit),
               Text(
-                '12H',
+                l10n.hoursLeft,
                 style: AppTypography.label(color: AppColors.pencilGray),
               ),
             ],
@@ -132,7 +138,7 @@ class _EmptyChallenges extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.s12),
           Text(
-            'No hay desafíos activos por ahora',
+            AppLocalizations.of(context).emptyChallenges,
             textAlign: TextAlign.center,
             style: AppTypography.body(color: AppColors.pencilGray),
           ),

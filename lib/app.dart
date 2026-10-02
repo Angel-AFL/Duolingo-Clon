@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'l10n/app_localizations.dart';
 import 'providers/auth_provider.dart';
 import 'routes/app_routes.dart';
 import 'screens/login/login_screen.dart';
@@ -16,11 +17,15 @@ class DuolingoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Duolingo Clone',
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
+      locale: const Locale('es'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const _AuthGate(),
       routes: <String, WidgetBuilder>{
         AppRoutes.streak: (BuildContext context) => const StreakScreen(),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../widgets/primary_button.dart';
 
 /// Pantalla de resultado que se muestra al terminar la leccion.
@@ -22,6 +23,7 @@ class LessonResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final int accuracy = total == 0
         ? 0
         : ((correctCount / total) * 100).round();
@@ -38,13 +40,13 @@ class LessonResultView extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.s24),
           Text(
-            '¡Lección completada!',
+            l10n.lessonComplete,
             textAlign: TextAlign.center,
             style: AppTypography.headingSm(color: AppColors.paperWhite),
           ),
           const SizedBox(height: AppSpacing.s8),
           Text(
-            'Sigue así, cada lección te acerca a tu meta.',
+            l10n.lessonCompleteSubtitle,
             textAlign: TextAlign.center,
             style: AppTypography.body(color: AppColors.pencilGray),
           ),
@@ -53,7 +55,7 @@ class LessonResultView extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: _ResultStat(
-                  label: 'EXP TOTAL',
+                  label: l10n.totalExp,
                   value: '+$exp',
                   color: AppColors.podiumGold,
                 ),
@@ -61,7 +63,7 @@ class LessonResultView extends StatelessWidget {
               const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: _ResultStat(
-                  label: 'PRECISIÓN',
+                  label: l10n.accuracy,
                   value: '$accuracy%',
                   color: AppColors.eagerGreen,
                 ),
@@ -69,7 +71,7 @@ class LessonResultView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.s40),
-          PrimaryButton(label: 'Continuar', onPressed: onContinue),
+          PrimaryButton(label: l10n.continueLabel, onPressed: onContinue),
         ],
       ),
     );

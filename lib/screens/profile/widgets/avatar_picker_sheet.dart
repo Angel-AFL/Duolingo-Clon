@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/avatar_preset.dart';
 import '../../../providers/profile_provider.dart';
 
@@ -36,6 +37,7 @@ class _AvatarPickerSheet extends StatelessWidget {
     final ProfileProvider provider = context.read<ProfileProvider>();
     final NavigatorState navigator = Navigator.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context);
     try {
       final XFile? file = await ImagePicker().pickImage(
         source: source,
@@ -53,7 +55,7 @@ class _AvatarPickerSheet extends StatelessWidget {
       if (navigator.mounted) navigator.pop();
     } catch (error) {
       messenger.showSnackBar(
-        SnackBar(content: Text('No se pudo cambiar la foto: $error')),
+        SnackBar(content: Text(l10n.changePhotoError(error.toString()))),
       );
     }
   }
@@ -68,6 +70,7 @@ class _AvatarPickerSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isUpdating = context.watch<ProfileProvider>().isUpdatingAvatar;
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     return SafeArea(
       child: Padding(
@@ -88,7 +91,7 @@ class _AvatarPickerSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.s16),
             Text(
-              'Elige tu foto',
+              AppLocalizations.of(context).choosePhoto,
               style: AppTypography.subheading(color: AppColors.paperWhite),
             ),
             const SizedBox(height: AppSpacing.s16),
@@ -111,7 +114,7 @@ class _AvatarPickerSheet extends StatelessWidget {
                 Expanded(
                   child: _SourceButton(
                     icon: Icons.photo_library_rounded,
-                    label: 'GALERÍA',
+                    label: l10n.gallery.toUpperCase(),
                     enabled: !isUpdating,
                     onTap: () => _pick(context, ImageSource.gallery),
                   ),
@@ -121,7 +124,7 @@ class _AvatarPickerSheet extends StatelessWidget {
                   Expanded(
                     child: _SourceButton(
                       icon: Icons.photo_camera_rounded,
-                      label: 'CÁMARA',
+                      label: l10n.camera.toUpperCase(),
                       enabled: !isUpdating,
                       onTap: () => _pick(context, ImageSource.camera),
                     ),

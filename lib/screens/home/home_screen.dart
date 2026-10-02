@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/theme/app_spacing.dart';
 import '../../data/app_constants.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/lesson_node.dart';
 import '../../providers/learning_path_provider.dart';
 import '../../routes/app_routes.dart';
@@ -43,7 +44,7 @@ class HomeScreen extends StatelessWidget {
     if (!path.hasLoaded) {
       if (path.hasError) {
         return ErrorRetryView(
-          title: 'No se pudo cargar tu camino',
+          title: AppLocalizations.of(context).homeLoadError,
           message: path.error,
           onRetry: path.load,
         );

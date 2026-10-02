@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/avatar_preset.dart';
 import '../../../models/profile_info.dart';
 
@@ -24,6 +25,8 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Container(
       width: double.infinity,
       color: AppColors.profileYellow,
@@ -51,7 +54,7 @@ class ProfileHeader extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: onCustomize,
-                    tooltip: 'Cambiar foto',
+                    tooltip: l10n.changePhoto,
                     icon: const Icon(
                       Icons.checkroom_rounded,
                       color: AppColors.nightInk,
@@ -62,7 +65,7 @@ class ProfileHeader extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.unit),
               Text(
-                'En Súper desde ${profile.superSince}',
+                l10n.superSince(profile.superSince),
                 style: AppTypography.subheading(
                   color: AppColors.nightInk.withValues(alpha: 0.7),
                 ),
@@ -132,7 +135,7 @@ class _ProfileAvatar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
               child: Text(
-                'SÚPER',
+                AppLocalizations.of(context).superBadge,
                 style: AppTypography.caption(
                   color: AppColors.paperWhite,
                 ).copyWith(fontStyle: FontStyle.italic),

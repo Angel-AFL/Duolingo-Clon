@@ -3,22 +3,25 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_spacing.dart';
 import '../core/theme/app_typography.dart';
+import '../l10n/app_localizations.dart';
 
 /// Vista de error con boton de reintento para pantallas que cargan datos.
 class ErrorRetryView extends StatelessWidget {
   const ErrorRetryView({
     super.key,
     required this.onRetry,
-    this.title = 'No se pudieron cargar los datos',
+    this.title,
     this.message,
   });
 
   final VoidCallback onRetry;
-  final String title;
+  final String? title;
   final String? message;
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.s24),
@@ -32,7 +35,7 @@ class ErrorRetryView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.s16),
             Text(
-              title,
+              title ?? l10n.loadErrorDefault,
               textAlign: TextAlign.center,
               style: AppTypography.subheading(color: AppColors.paperWhite),
             ),
@@ -60,7 +63,7 @@ class ErrorRetryView extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'REINTENTAR',
+                  l10n.retry.toUpperCase(),
                   style: AppTypography.label(color: AppColors.paperWhite),
                 ),
               ),

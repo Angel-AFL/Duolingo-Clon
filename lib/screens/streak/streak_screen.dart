@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/friend_streak.dart';
 import '../../models/streak_calendar.dart';
 import '../../providers/streak_provider.dart';
@@ -23,6 +24,7 @@ class StreakScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final StreakProvider streak = context.watch<StreakProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     return DefaultTabController(
       length: 2,
@@ -32,23 +34,23 @@ class StreakScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               const _TopBar(),
-              const TabBar(
+              TabBar(
                 labelColor: AppColors.sparkBlue,
                 unselectedLabelColor: AppColors.pencilGray,
                 indicatorColor: AppColors.sparkBlue,
                 indicatorWeight: 3,
                 dividerColor: AppColors.darkBorder,
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1,
                   fontSize: 14,
                 ),
                 tabs: <Widget>[
-                  Tab(text: 'PERSONAL'),
-                  Tab(text: 'AMIGOS'),
+                  Tab(text: l10n.personalTab),
+                  Tab(text: l10n.friendsTab),
                 ],
               ),
-              Expanded(child: _body(streak)),
+              Expanded(child: _body(context, streak)),
             ],
           ),
         ),
@@ -56,11 +58,11 @@ class StreakScreen extends StatelessWidget {
     );
   }
 
-  Widget _body(StreakProvider streak) {
+  Widget _body(BuildContext context, StreakProvider streak) {
     if (!streak.hasLoaded) {
       if (streak.hasError) {
         return ErrorRetryView(
-          title: 'No se pudo cargar la racha',
+          title: AppLocalizations.of(context).streakLoadError,
           message: streak.error,
           onRetry: streak.load,
         );
@@ -92,7 +94,7 @@ class _TopBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Días de racha',
+              AppLocalizations.of(context).streakDaysTitle,
               textAlign: TextAlign.center,
               style: AppTypography.subheading(color: AppColors.paperWhite),
             ),
@@ -114,6 +116,7 @@ class _PersonalTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final int streakDays = context.watch<UserStatsProvider>().stats.streakDays;
     final StreakCalendar calendar = context.watch<StreakProvider>().calendar;
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.s16),
@@ -129,7 +132,7 @@ class _PersonalTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.standard),
             ),
             child: Text(
-              'SOCIEDAD DE RACHAS EXTENSAS',
+              l10n.streakSociety,
               style: AppTypography.label(color: AppColors.pencilGray),
             ),
           ),
@@ -148,7 +151,7 @@ class _PersonalTab extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'días de racha',
+                    l10n.daysOfStreak,
                     style: AppTypography.headingSm(color: AppColors.pencilGray),
                   ),
                 ],
@@ -181,16 +184,15 @@ class _PersonalTab extends StatelessWidget {
                   TextSpan(
                     style: AppTypography.body(color: AppColors.paperWhite),
                     children: <TextSpan>[
-                      const TextSpan(text: 'Has mantenido una '),
+                      TextSpan(text: l10n.perfectStreakPre),
                       TextSpan(
-                        text: 'Racha perfecta',
+                        text: l10n.perfectStreak,
                         style: AppTypography.body(
                           color: AppColors.streakDeep,
                         ).copyWith(fontWeight: FontWeight.w800),
                       ),
                       TextSpan(
-                        text:
-                            ' durante ${calendar.perfectWeeks} semanas. ¡Impresionante!',
+                        text: l10n.perfectStreakPost(calendar.perfectWeeks),
                       ),
                     ],
                   ),
@@ -229,7 +231,7 @@ class _FriendsTab extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.s12),
               Text(
-                'Aún no sigues a nadie',
+                AppLocalizations.of(context).noFriends,
                 textAlign: TextAlign.center,
                 style: AppTypography.body(color: AppColors.pencilGray),
               ),

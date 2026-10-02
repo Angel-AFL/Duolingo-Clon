@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../widgets/duo_mascot.dart';
 import '../../../widgets/progress_bar.dart';
 
@@ -23,6 +24,7 @@ class ChallengesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final bool isComplete = points >= pointsTarget;
     final int remaining = (pointsTarget - points).clamp(0, pointsTarget);
 
@@ -47,7 +49,7 @@ class ChallengesHeader extends StatelessWidget {
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 220),
                     child: Text(
-                      'Desafío de $month',
+                      l10n.challengeOf(month),
                       style: AppTypography.screenTitle(
                         color: AppColors.paperWhite,
                       ),
@@ -63,7 +65,7 @@ class ChallengesHeader extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacing.s8),
                       Text(
-                        '$daysLeft DÍAS',
+                        l10n.daysLeftShort(daysLeft),
                         style: AppTypography.label(color: AppColors.paperWhite),
                       ),
                     ],
@@ -79,7 +81,7 @@ class ChallengesHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Gana $pointsTarget puntos de desafío',
+                          l10n.earnPoints(pointsTarget),
                           style: AppTypography.subheading(
                             color: AppColors.paperWhite,
                           ),
@@ -94,8 +96,8 @@ class ChallengesHeader extends StatelessWidget {
                         const SizedBox(height: AppSpacing.s8),
                         Text(
                           isComplete
-                              ? '¡Desafío completado!'
-                              : 'Te faltan $remaining puntos',
+                              ? l10n.challengeComplete
+                              : l10n.pointsRemaining(remaining),
                           style: AppTypography.label(
                             color: isComplete
                                 ? AppColors.eagerGreen

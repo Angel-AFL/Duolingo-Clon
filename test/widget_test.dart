@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'package:duolingo_clon/app.dart';
+import 'package:duolingo_clon/l10n/app_localizations.dart';
 import 'package:duolingo_clon/core/utils/formatters.dart';
 import 'package:duolingo_clon/data/repositories/learning_path_repository.dart';
 import 'package:duolingo_clon/models/lesson_exercise.dart';
@@ -52,6 +54,9 @@ Widget _screen(Widget child) => MultiProvider(
   child: MaterialApp(
     themeMode: ThemeMode.dark,
     darkTheme: ThemeData.dark(),
+    locale: const Locale('es'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     routes: <String, WidgetBuilder>{
       AppRoutes.streak: (BuildContext context) => const StreakScreen(),
       AppRoutes.lesson: (BuildContext context) => const LessonScreen(),
@@ -128,8 +133,9 @@ class _FakePathRepository implements LearningPathRepository {
 }
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
     GoogleFonts.config.allowRuntimeFetching = false;
+    await initializeDateFormatting('es');
   });
 
   testWidgets('login autentica y navega al home', (WidgetTester tester) async {

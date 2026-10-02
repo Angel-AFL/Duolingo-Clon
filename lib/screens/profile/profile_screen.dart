@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/friend_streak.dart';
 import '../../models/profile_info.dart';
 import '../../models/user_stats.dart';
@@ -29,31 +30,32 @@ class ProfileScreen extends StatelessWidget {
 
   Future<void> _confirmSignOut(BuildContext context) async {
     final AuthProvider auth = context.read<AuthProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final bool confirmed =
         await showDialog<bool>(
           context: context,
           builder: (BuildContext dialogContext) => AlertDialog(
             backgroundColor: AppColors.darkSurface,
             title: Text(
-              'Cerrar sesión',
+              l10n.signOut,
               style: AppTypography.subheading(color: AppColors.paperWhite),
             ),
             content: Text(
-              '¿Seguro que quieres salir de tu cuenta?',
+              l10n.signOutConfirm,
               style: AppTypography.body(color: AppColors.pencilGray),
             ),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(false),
                 child: Text(
-                  'CANCELAR',
+                  l10n.cancel.toUpperCase(),
                   style: AppTypography.label(color: AppColors.pencilGray),
                 ),
               ),
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(true),
                 child: Text(
-                  'SALIR',
+                  l10n.signOut.toUpperCase(),
                   style: AppTypography.label(color: AppColors.heartPink),
                 ),
               ),
@@ -72,11 +74,12 @@ class ProfileScreen extends StatelessWidget {
     final List<FriendStreak> friendStreaks = context
         .watch<StreakProvider>()
         .friendStreaks;
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     if (!profileProvider.hasLoaded) {
       if (profileProvider.hasError) {
         return ErrorRetryView(
-          title: 'No se pudo cargar el perfil',
+          title: l10n.profileLoadError,
           message: profileProvider.error,
           onRetry: profileProvider.load,
         );
@@ -110,7 +113,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               children: <Widget>[
                 Text(
-                  '${profile.handle} · SE UNIÓ EN ${profile.joinedYear}',
+                  l10n.joinedOn(profile.handle, profile.joinedYear),
                   style: AppTypography.label(color: AppColors.pencilGray),
                 ),
                 const SizedBox(height: AppSpacing.s24),
@@ -125,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.person_add_alt_1_rounded),
                           label: Text(
-                            'AGREGA AMIGOS',
+                            l10n.addFriends.toUpperCase(),
                             style: AppTypography.label(
                               color: AppColors.paperWhite,
                             ),
@@ -170,11 +173,11 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.s24),
-                const SectionLabel(label: 'Resumen'),
+                SectionLabel(label: l10n.summary),
                 const SizedBox(height: AppSpacing.s16),
                 _Summary(stats: stats, profile: profile),
                 const SizedBox(height: AppSpacing.s24),
-                const SectionLabel(label: 'Rachas entre amigos'),
+                SectionLabel(label: l10n.friendStreaks),
                 const SizedBox(height: AppSpacing.s16),
                 SizedBox(
                   height: 108,
@@ -194,11 +197,11 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.s24),
                 SectionLabel(
-                  label: 'Súper familia',
+                  label: l10n.superFamily,
                   trailing: TextButton(
                     onPressed: () {},
                     child: Text(
-                      'ADMINISTRAR',
+                      l10n.manage.toUpperCase(),
                       style: AppTypography.label(color: AppColors.sparkBlue),
                     ),
                   ),
@@ -210,7 +213,7 @@ class ProfileScreen extends StatelessWidget {
                     onPressed: () => _confirmSignOut(context),
                     icon: const Icon(Icons.logout_rounded),
                     label: Text(
-                      'CERRAR SESIÓN',
+                      l10n.signOut.toUpperCase(),
                       style: AppTypography.label(color: AppColors.heartPink),
                     ),
                     style: OutlinedButton.styleFrom(
@@ -243,6 +246,8 @@ class _SocialStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -258,16 +263,19 @@ class _SocialStats extends StatelessWidget {
                 ),
               ],
             ),
-            label: 'Cursos',
+            label: l10n.courses,
           ),
         ),
         Expanded(
-          child: _SocialStat(value: '${profile.following}', label: 'Siguiendo'),
+          child: _SocialStat(
+            value: '${profile.following}',
+            label: l10n.following,
+          ),
         ),
         Expanded(
           child: _SocialStat(
             value: '${profile.followers}',
-            label: 'Seguidores',
+            label: l10n.followers,
           ),
         ),
       ],
@@ -308,6 +316,8 @@ class _Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Column(
       children: <Widget>[
         Row(
@@ -316,7 +326,7 @@ class _Summary extends StatelessWidget {
               child: _SummaryItem(
                 icon: Icons.local_fire_department_rounded,
                 color: AppColors.streakOrange,
-                label: '${formatThousands(stats.streakDays)} días',
+                label: l10n.daysCount(formatThousands(stats.streakDays)),
               ),
             ),
             Expanded(
@@ -344,7 +354,7 @@ class _Summary extends StatelessWidget {
               child: _SummaryItem(
                 icon: Icons.bolt_rounded,
                 color: AppColors.podiumGold,
-                label: '${formatThousands(profile.totalExp)} EXP',
+                label: l10n.expValue(formatThousands(profile.totalExp)),
               ),
             ),
           ],

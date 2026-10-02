@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/lesson_exercise.dart';
 import '../../models/lesson_outcome.dart';
 import '../../providers/challenges_provider.dart';
@@ -176,7 +177,7 @@ class _LessonScreenState extends State<LessonScreen> {
       child: SafeArea(
         top: false,
         child: PrimaryButton(
-          label: 'Comprobar',
+          label: AppLocalizations.of(context).check,
           onPressed: provider.canCheck ? provider.check : null,
         ),
       ),

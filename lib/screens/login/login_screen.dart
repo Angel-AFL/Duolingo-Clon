@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/duo_mascot.dart';
 import '../../widgets/primary_button.dart';
@@ -58,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final AuthProvider auth = context.watch<AuthProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.paperWhite,
@@ -82,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (_isSignUp) ...<Widget>[
                     _AuthField(
                       controller: _name,
-                      label: 'Nombre',
+                      label: l10n.nameLabel,
                       icon: Icons.person_rounded,
                       textInputAction: TextInputAction.next,
                     ),
@@ -90,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                   _AuthField(
                     controller: _email,
-                    label: 'Correo electrónico',
+                    label: l10n.emailLabel,
                     icon: Icons.mail_rounded,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -98,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: AppSpacing.s12),
                   _AuthField(
                     controller: _password,
-                    label: 'Contraseña',
+                    label: l10n.passwordLabel,
                     icon: Icons.lock_rounded,
                     obscureText: true,
                     textInputAction: TextInputAction.done,
@@ -114,16 +116,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                   const SizedBox(height: AppSpacing.s24),
                   PrimaryButton(
-                    label: _isSignUp ? 'Crear cuenta' : 'Iniciar sesión',
+                    label: _isSignUp ? l10n.signUp : l10n.signIn,
                     onPressed: auth.isSubmitting ? null : _submit,
                   ),
                   const SizedBox(height: AppSpacing.s12),
                   TextButton(
                     onPressed: auth.isSubmitting ? null : _toggleMode,
                     child: Text(
-                      _isSignUp
-                          ? '¿Ya tienes cuenta? Inicia sesión'
-                          : '¿No tienes cuenta? Regístrate',
+                      _isSignUp ? l10n.haveAccount : l10n.noAccount,
                       style: AppTypography.label(color: AppColors.sparkBlue),
                     ),
                   ),
