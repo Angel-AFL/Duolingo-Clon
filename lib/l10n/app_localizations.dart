@@ -525,6 +525,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Empareja las parejas'**
   String get matchPairs;
+
+  /// No description provided for @navHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get navHome;
+
+  /// No description provided for @navPractice.
+  ///
+  /// In es, this message translates to:
+  /// **'Práctica'**
+  String get navPractice;
+
+  /// No description provided for @navGems.
+  ///
+  /// In es, this message translates to:
+  /// **'Gemas'**
+  String get navGems;
+
+  /// No description provided for @navHearts.
+  ///
+  /// In es, this message translates to:
+  /// **'Corazones'**
+  String get navHearts;
+
+  /// No description provided for @navLeague.
+  ///
+  /// In es, this message translates to:
+  /// **'Liga'**
+  String get navLeague;
+
+  /// No description provided for @navMore.
+  ///
+  /// In es, this message translates to:
+  /// **'Más'**
+  String get navMore;
+
+  /// No description provided for @a11yLessonNode.
+  ///
+  /// In es, this message translates to:
+  /// **'Lección {position}'**
+  String a11yLessonNode(int position);
+
+  /// No description provided for @a11yAvatarPreset.
+  ///
+  /// In es, this message translates to:
+  /// **'Avatar {index}'**
+  String a11yAvatarPreset(int index);
+
+  /// No description provided for @a11yStatStreak.
+  ///
+  /// In es, this message translates to:
+  /// **'Racha de {days} días'**
+  String a11yStatStreak(int days);
+
+  /// No description provided for @a11yFriendStreak.
+  ///
+  /// In es, this message translates to:
+  /// **'Racha con {name}: {days} días'**
+  String a11yFriendStreak(String name, int days);
 }
 
 class _AppLocalizationsDelegate

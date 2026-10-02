@@ -246,4 +246,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get matchPairs => 'Empareja las parejas';
+
+  @override
+  String get navHome => 'Inicio';
+
+  @override
+  String get navPractice => 'Práctica';
+
+  @override
+  String get navGems => 'Gemas';
+
+  @override
+  String get navHearts => 'Corazones';
+
+  @override
+  String get navLeague => 'Liga';
+
+  @override
+  String get navMore => 'Más';
+
+  @override
+  String a11yLessonNode(int position) {
+    return 'Lección $position';
+  }
+
+  @override
+  String a11yAvatarPreset(int index) {
+    return 'Avatar $index';
+  }
+
+  @override
+  String a11yStatStreak(int days) {
+    return 'Racha de $days días';
+  }
+
+  @override
+  String a11yFriendStreak(String name, int days) {
+    return 'Racha con $name: $days días';
+  }
 }

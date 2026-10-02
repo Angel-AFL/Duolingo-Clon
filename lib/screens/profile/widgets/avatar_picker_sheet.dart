@@ -158,16 +158,23 @@ class _PresetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: enabled ? onTap : null,
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: preset.color,
+    return Semantics(
+      label: AppLocalizations.of(
+        context,
+      ).a11yAvatarPreset(AvatarPreset.all.indexOf(preset) + 1),
+      button: true,
+      enabled: enabled,
+      child: GestureDetector(
+        onTap: enabled ? onTap : null,
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: preset.color,
+          ),
+          child: Icon(preset.icon, color: AppColors.paperWhite, size: 30),
         ),
-        child: Icon(preset.icon, color: AppColors.paperWhite, size: 30),
       ),
     );
   }

@@ -138,5 +138,37 @@
   "translateSentence": "Traduce esta oración",
   "tapWords": "Toca las palabras para formar la oración",
   "completeSentence": "Completa la oración",
-  "matchPairs": "Empareja las parejas"
+  "matchPairs": "Empareja las parejas",
+
+  "navHome": "Inicio",
+  "navPractice": "Práctica",
+  "navGems": "Gemas",
+  "navHearts": "Corazones",
+  "navLeague": "Liga",
+  "navMore": "Más",
+  "a11yLessonNode": "Lección {position}",
+  "@a11yLessonNode": {
+    "placeholders": {
+      "position": { "type": "int" }
+    }
+  },
+  "a11yAvatarPreset": "Avatar {index}",
+  "@a11yAvatarPreset": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "a11yStatStreak": "Racha de {days} días",
+  "@a11yStatStreak": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "a11yFriendStreak": "Racha con {name}: {days} días",
+  "@a11yFriendStreak": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "days": { "type": "int" }
+    }
+  }
 }

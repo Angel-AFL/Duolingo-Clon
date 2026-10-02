@@ -75,6 +75,7 @@ class ProfileHeader extends StatelessWidget {
                 child: _ProfileAvatar(
                   avatarUrl: profile.avatarUrl,
                   isUpdating: isUpdatingAvatar,
+                  semanticLabel: profile.name,
                 ),
               ),
             ],
@@ -86,10 +87,15 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class _ProfileAvatar extends StatelessWidget {
-  const _ProfileAvatar({this.avatarUrl, this.isUpdating = false});
+  const _ProfileAvatar({
+    this.avatarUrl,
+    this.isUpdating = false,
+    this.semanticLabel,
+  });
 
   final String? avatarUrl;
   final bool isUpdating;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +169,7 @@ class _ProfileAvatar extends StatelessWidget {
       return Image.network(
         url,
         fit: BoxFit.cover,
+        semanticLabel: semanticLabel,
         errorBuilder: (_, _, _) => _placeholder(),
       );
     }
@@ -171,6 +178,7 @@ class _ProfileAvatar extends StatelessWidget {
       return Image.asset(
         url,
         fit: BoxFit.cover,
+        semanticLabel: semanticLabel,
         errorBuilder: (_, _, _) => _placeholder(),
       );
     }

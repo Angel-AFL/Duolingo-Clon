@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/lesson_node.dart';
 
 /// Nodo circular del camino de aprendizaje.
@@ -26,25 +27,30 @@ class LessonNodeTile extends StatelessWidget {
 
     return Align(
       alignment: Alignment(node.horizontalOffset, 0),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 68,
-          height: 68,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: fill,
-            boxShadow: isActive
-                ? <BoxShadow>[
-                    BoxShadow(
-                      color: AppColors.sparkBlue.withValues(alpha: 0.45),
-                      blurRadius: 24,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : null,
+      child: Semantics(
+        label: AppLocalizations.of(context).a11yLessonNode(node.position + 1),
+        button: true,
+        enabled: node.status != LessonNodeStatus.locked,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: fill,
+              boxShadow: isActive
+                  ? <BoxShadow>[
+                      BoxShadow(
+                        color: AppColors.sparkBlue.withValues(alpha: 0.45),
+                        blurRadius: 24,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Icon(node.icon, color: iconColor, size: 32),
           ),
-          child: Icon(node.icon, color: iconColor, size: 32),
         ),
       ),
     );
