@@ -8,8 +8,10 @@ import '../../core/utils/formatters.dart';
 import '../../data/app_constants.dart';
 import '../../models/daily_challenge.dart';
 import '../../providers/challenges_provider.dart';
+import '../../widgets/error_retry_view.dart';
 import '../../widgets/section_label.dart';
 import 'widgets/challenges_header.dart';
+import 'widgets/challenges_skeleton.dart';
 import 'widgets/daily_challenge_tile.dart';
 
 /// Pantalla de desafios (boceto `desafios.jpeg`, tema oscuro).
@@ -29,69 +31,113 @@ class ChallengesScreen extends StatelessWidget {
           points: challenges.points,
           pointsTarget: challenges.pointsTarget,
         ),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.s16,
-              AppSpacing.s16,
-              AppSpacing.s16,
-              AppSpacing.s24,
+        Expanded(child: _body(challenges)),
+      ],
+    );
+  }
+
+  Widget _body(ChallengesProvider challenges) {
+    if (!challenges.hasLoaded) {
+      if (challenges.hasError) {
+        return ErrorRetryView(
+          title: 'No se pudieron cargar los desafíos',
+          message: challenges.error,
+          onRetry: challenges.load,
+        );
+      }
+      if (challenges.isLoading) return const ChallengesSkeleton();
+    }
+
+    final List<DailyChallenge> dailyChallenges = challenges.challenges;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.s16,
+        AppSpacing.s16,
+        AppSpacing.s16,
+        AppSpacing.s24,
+      ),
+      children: <Widget>[
+        _PartnerRow(
+          name: AppConstants.challengePartner,
+          exp: AppConstants.challengePartnerExp,
+        ),
+        const SizedBox(height: AppSpacing.s16),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: _ActionButton(
+                emoji: '👋',
+                label: 'Dar toque',
+                onPressed: challenges.giveCheer,
+              ),
             ),
+            const SizedBox(width: AppSpacing.s12),
+            Expanded(
+              child: _ActionButton(
+                emoji: '🎁',
+                label: 'Dar regalo',
+                onPressed: challenges.giveGift,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.s24),
+        const Divider(color: AppColors.darkBorder, height: 1),
+        const SizedBox(height: AppSpacing.s24),
+        SectionLabel(
+          label: 'Desafíos del día',
+          trailing: Row(
             children: <Widget>[
-              _PartnerRow(
-                name: AppConstants.challengePartner,
-                exp: AppConstants.challengePartnerExp,
+              const Icon(
+                Icons.schedule_rounded,
+                size: 16,
+                color: AppColors.pencilGray,
               ),
-              const SizedBox(height: AppSpacing.s16),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: _ActionButton(
-                      emoji: '👋',
-                      label: 'Dar toque',
-                      onPressed: challenges.giveCheer,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s12),
-                  Expanded(
-                    child: _ActionButton(
-                      emoji: '🎁',
-                      label: 'Dar regalo',
-                      onPressed: challenges.giveGift,
-                    ),
-                  ),
-                ],
+              const SizedBox(width: AppSpacing.unit),
+              Text(
+                '12H',
+                style: AppTypography.label(color: AppColors.pencilGray),
               ),
-              const SizedBox(height: AppSpacing.s24),
-              const Divider(color: AppColors.darkBorder, height: 1),
-              const SizedBox(height: AppSpacing.s24),
-              SectionLabel(
-                label: 'Desafíos del día',
-                trailing: Row(
-                  children: <Widget>[
-                    const Icon(
-                      Icons.schedule_rounded,
-                      size: 16,
-                      color: AppColors.pencilGray,
-                    ),
-                    const SizedBox(width: AppSpacing.unit),
-                    Text(
-                      '12H',
-                      style: AppTypography.label(color: AppColors.pencilGray),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s8),
-              for (final DailyChallenge challenge in challenges.challenges)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.s16),
-                  child: DailyChallengeTile(challenge: challenge),
-                ),
             ],
           ),
         ),
+        const SizedBox(height: AppSpacing.s8),
+        if (dailyChallenges.isEmpty)
+          const _EmptyChallenges()
+        else
+          for (final DailyChallenge challenge in dailyChallenges)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+              child: DailyChallengeTile(challenge: challenge),
+            ),
       ],
+    );
+  }
+}
+
+class _EmptyChallenges extends StatelessWidget {
+  const _EmptyChallenges();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s32),
+      child: Column(
+        children: <Widget>[
+          const Icon(
+            Icons.emoji_events_outlined,
+            color: AppColors.pencilGray,
+            size: 40,
+          ),
+          const SizedBox(height: AppSpacing.s12),
+          Text(
+            'No hay desafíos activos por ahora',
+            textAlign: TextAlign.center,
+            style: AppTypography.body(color: AppColors.pencilGray),
+          ),
+        ],
+      ),
     );
   }
 }

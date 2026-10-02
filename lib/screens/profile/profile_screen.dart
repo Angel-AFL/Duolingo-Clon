@@ -12,6 +12,7 @@ import '../../providers/profile_provider.dart';
 import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/error_retry_view.dart';
 import '../../widgets/section_label.dart';
 import 'widgets/avatar_picker_sheet.dart';
 import 'widgets/friend_streak_item.dart';
@@ -36,7 +37,8 @@ class ProfileScreen extends StatelessWidget {
 
     if (!profileProvider.hasLoaded) {
       if (profileProvider.hasError) {
-        return _ProfileError(
+        return ErrorRetryView(
+          title: 'No se pudo cargar el perfil',
           message: profileProvider.error,
           onRetry: profileProvider.load,
         );
@@ -168,67 +170,6 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ProfileError extends StatelessWidget {
-  const _ProfileError({required this.onRetry, this.message});
-
-  final VoidCallback onRetry;
-  final String? message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.s24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const Icon(
-              Icons.cloud_off_rounded,
-              color: AppColors.pencilGray,
-              size: 48,
-            ),
-            const SizedBox(height: AppSpacing.s16),
-            Text(
-              'No se pudo cargar el perfil',
-              textAlign: TextAlign.center,
-              style: AppTypography.subheading(color: AppColors.paperWhite),
-            ),
-            if (message != null) ...<Widget>[
-              const SizedBox(height: AppSpacing.s8),
-              Text(
-                message!,
-                textAlign: TextAlign.center,
-                style: AppTypography.caption(color: AppColors.pencilGray),
-              ),
-            ],
-            const SizedBox(height: AppSpacing.s24),
-            SizedBox(
-              height: 52,
-              child: OutlinedButton(
-                onPressed: onRetry,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.paperWhite,
-                  side: const BorderSide(
-                    color: AppColors.darkBorder,
-                    width: 2,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.standard),
-                  ),
-                ),
-                child: Text(
-                  'REINTENTAR',
-                  style: AppTypography.label(color: AppColors.paperWhite),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/theme/app_spacing.dart';
 import '../../data/app_constants.dart';
 import '../../models/lesson_node.dart';
+import '../../providers/learning_path_provider.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/error_retry_view.dart';
+import 'widgets/home_skeleton.dart';
 import 'widgets/lesson_path.dart';
 import 'widgets/section_banner.dart';
 import 'widgets/top_stats_bar.dart';
@@ -22,33 +26,46 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final LearningPathProvider path = context.watch<LearningPathProvider>();
+
     return SafeArea(
       bottom: false,
       child: Column(
         children: <Widget>[
           const TopStatsBar(),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.s16,
-                AppSpacing.s8,
-                AppSpacing.s16,
-                AppSpacing.s24,
-              ),
-              children: <Widget>[
-                const SectionBanner(
-                  stage: AppConstants.sectionStage,
-                  title: AppConstants.sectionTitle,
-                ),
-                const SizedBox(height: AppSpacing.s24),
-                LessonPath(
-                  onNodeTap: (LessonNode node) => _onNodeTap(context, node),
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: _body(context, path)),
         ],
       ),
+    );
+  }
+
+  Widget _body(BuildContext context, LearningPathProvider path) {
+    if (!path.hasLoaded) {
+      if (path.hasError) {
+        return ErrorRetryView(
+          title: 'No se pudo cargar tu camino',
+          message: path.error,
+          onRetry: path.load,
+        );
+      }
+      if (path.isLoading) return const HomeSkeleton();
+    }
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.s16,
+        AppSpacing.s8,
+        AppSpacing.s16,
+        AppSpacing.s24,
+      ),
+      children: <Widget>[
+        const SectionBanner(
+          stage: AppConstants.sectionStage,
+          title: AppConstants.sectionTitle,
+        ),
+        const SizedBox(height: AppSpacing.s24),
+        LessonPath(onNodeTap: (LessonNode node) => _onNodeTap(context, node)),
+      ],
     );
   }
 }

@@ -10,7 +10,9 @@ import '../../models/streak_calendar.dart';
 import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../widgets/avatar_circle.dart';
+import '../../widgets/error_retry_view.dart';
 import 'widgets/streak_calendar_view.dart';
+import 'widgets/streak_skeleton.dart';
 
 /// Pantalla de detalle de racha (boceto `rachas.jpeg`).
 ///
@@ -20,6 +22,8 @@ class StreakScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final StreakProvider streak = context.watch<StreakProvider>();
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -44,15 +48,28 @@ class StreakScreen extends StatelessWidget {
                   Tab(text: 'AMIGOS'),
                 ],
               ),
-              const Expanded(
-                child: TabBarView(
-                  children: <Widget>[_PersonalTab(), _FriendsTab()],
-                ),
-              ),
+              Expanded(child: _body(streak)),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _body(StreakProvider streak) {
+    if (!streak.hasLoaded) {
+      if (streak.hasError) {
+        return ErrorRetryView(
+          title: 'No se pudo cargar la racha',
+          message: streak.error,
+          onRetry: streak.load,
+        );
+      }
+      if (streak.isLoading) return const StreakSkeleton();
+    }
+
+    return const TabBarView(
+      children: <Widget>[_PersonalTab(), _FriendsTab()],
     );
   }
 }
@@ -197,6 +214,30 @@ class _FriendsTab extends StatelessWidget {
     final List<FriendStreak> friendStreaks = context
         .watch<StreakProvider>()
         .friendStreaks;
+
+    if (friendStreaks.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.s24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Icon(
+                Icons.people_outline_rounded,
+                color: AppColors.pencilGray,
+                size: 40,
+              ),
+              const SizedBox(height: AppSpacing.s12),
+              Text(
+                'Aún no sigues a nadie',
+                textAlign: TextAlign.center,
+                style: AppTypography.body(color: AppColors.pencilGray),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.s16),
