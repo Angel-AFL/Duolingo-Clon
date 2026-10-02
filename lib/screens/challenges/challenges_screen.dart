@@ -188,32 +188,22 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.darkBorder, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.standard),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(emoji, style: const TextStyle(fontSize: 20)),
-            const SizedBox(width: AppSpacing.s8),
-            Flexible(
-              child: Text(
-                label.toUpperCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.label(color: AppColors.paperWhite),
-              ),
+    return OutlinedButton(
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(emoji, style: const TextStyle(fontSize: 20)),
+          const SizedBox(width: AppSpacing.s8),
+          Flexible(
+            child: Text(
+              label.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.label(color: AppColors.paperWhite),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

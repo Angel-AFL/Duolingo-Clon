@@ -48,24 +48,11 @@ class ErrorRetryView extends StatelessWidget {
               ),
             ],
             const SizedBox(height: AppSpacing.s24),
-            SizedBox(
-              height: 52,
-              child: OutlinedButton(
-                onPressed: onRetry,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.paperWhite,
-                  side: const BorderSide(
-                    color: AppColors.darkBorder,
-                    width: 2,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.standard),
-                  ),
-                ),
-                child: Text(
-                  l10n.retry.toUpperCase(),
-                  style: AppTypography.label(color: AppColors.paperWhite),
-                ),
+            OutlinedButton(
+              onPressed: onRetry,
+              child: Text(
+                l10n.retry.toUpperCase(),
+                style: AppTypography.label(color: AppColors.paperWhite),
               ),
             ),
           ],

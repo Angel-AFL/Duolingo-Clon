@@ -122,28 +122,13 @@ class ProfileScreen extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: SizedBox(
-                        height: 52,
-                        child: OutlinedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.person_add_alt_1_rounded),
-                          label: Text(
-                            l10n.addFriends.toUpperCase(),
-                            style: AppTypography.label(
-                              color: AppColors.paperWhite,
-                            ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.paperWhite,
-                            side: const BorderSide(
-                              color: AppColors.darkBorder,
-                              width: 2,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.standard,
-                              ),
-                            ),
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.person_add_alt_1_rounded),
+                        label: Text(
+                          l10n.addFriends.toUpperCase(),
+                          style: AppTypography.label(
+                            color: AppColors.paperWhite,
                           ),
                         ),
                       ),
@@ -151,20 +136,11 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(width: AppSpacing.s12),
                     SizedBox(
                       width: 52,
-                      height: 52,
                       child: OutlinedButton(
                         onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          foregroundColor: AppColors.paperWhite,
-                          side: const BorderSide(
-                            color: AppColors.darkBorder,
-                            width: 2,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.standard,
-                            ),
+                        style: const ButtonStyle(
+                          padding: WidgetStatePropertyAll<EdgeInsets>(
+                            EdgeInsets.zero,
                           ),
                         ),
                         child: const Icon(Icons.qr_code_2_rounded),
@@ -207,26 +183,16 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s24),
-                SizedBox(
-                  height: 52,
-                  child: OutlinedButton.icon(
-                    onPressed: () => _confirmSignOut(context),
-                    icon: const Icon(Icons.logout_rounded),
-                    label: Text(
-                      l10n.signOut.toUpperCase(),
-                      style: AppTypography.label(color: AppColors.heartPink),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.heartPink,
-                      side: const BorderSide(
-                        color: AppColors.darkBorder,
-                        width: 2,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          AppRadius.standard,
-                        ),
-                      ),
+                OutlinedButton.icon(
+                  onPressed: () => _confirmSignOut(context),
+                  icon: const Icon(Icons.logout_rounded),
+                  label: Text(
+                    l10n.signOut.toUpperCase(),
+                    style: AppTypography.label(color: AppColors.heartPink),
+                  ),
+                  style: const ButtonStyle(
+                    foregroundColor: WidgetStatePropertyAll<Color>(
+                      AppColors.heartPink,
                     ),
                   ),
                 ),

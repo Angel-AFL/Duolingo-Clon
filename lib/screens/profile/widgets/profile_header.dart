@@ -111,7 +111,7 @@ class _ProfileAvatar extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0x66000000),
+                  color: AppColors.scrim,
                 ),
                 child: Center(
                   child: CircularProgressIndicator(

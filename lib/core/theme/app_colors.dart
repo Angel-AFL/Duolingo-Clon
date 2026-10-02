@@ -56,4 +56,7 @@ abstract final class AppColors {
   static const Color progressTrack = Color(0xFF37464F);
   static const Color superPink = Color(0xFFFF4FA3);
   static const Color rewardTeal = Color(0xFF2B6E7F);
+
+  /// Velo oscuro para superponer sobre avatares/imagenes al actualizar.
+  static const Color scrim = Color(0x66000000);
 }

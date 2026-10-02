@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'package:duolingo_clon/app.dart';
+import 'package:duolingo_clon/core/theme/app_theme.dart';
 import 'package:duolingo_clon/l10n/app_localizations.dart';
 import 'package:duolingo_clon/core/utils/formatters.dart';
 import 'package:duolingo_clon/data/repositories/learning_path_repository.dart';
@@ -53,7 +54,7 @@ Widget _screen(Widget child) => MultiProvider(
   providers: _providers(),
   child: MaterialApp(
     themeMode: ThemeMode.dark,
-    darkTheme: ThemeData.dark(),
+    darkTheme: AppTheme.dark,
     locale: const Locale('es'),
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,

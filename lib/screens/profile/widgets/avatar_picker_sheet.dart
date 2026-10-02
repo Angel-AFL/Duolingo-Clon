@@ -188,22 +188,12 @@ class _SourceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: OutlinedButton.icon(
-        onPressed: enabled ? onTap : null,
-        icon: Icon(icon),
-        label: Text(
-          label,
-          style: AppTypography.label(color: AppColors.paperWhite),
-        ),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.paperWhite,
-          side: const BorderSide(color: AppColors.darkBorder, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.standard),
-          ),
-        ),
+    return OutlinedButton.icon(
+      onPressed: enabled ? onTap : null,
+      icon: Icon(icon),
+      label: Text(
+        label,
+        style: AppTypography.label(color: AppColors.paperWhite),
       ),
     );
   }
