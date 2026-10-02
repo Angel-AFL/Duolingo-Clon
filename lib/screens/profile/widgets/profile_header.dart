@@ -58,12 +58,6 @@ class ProfileHeader extends StatelessWidget {
                       size: 26,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.unit),
-                  const Icon(
-                    Icons.settings_rounded,
-                    color: AppColors.nightInk,
-                    size: 26,
-                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.unit),

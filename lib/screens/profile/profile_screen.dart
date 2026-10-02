@@ -8,6 +8,7 @@ import '../../core/utils/formatters.dart';
 import '../../models/friend_streak.dart';
 import '../../models/profile_info.dart';
 import '../../models/user_stats.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
@@ -24,6 +25,43 @@ class ProfileScreen extends StatelessWidget {
 
   void _openStreak(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.streak);
+  }
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final AuthProvider auth = context.read<AuthProvider>();
+    final bool confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (BuildContext dialogContext) => AlertDialog(
+            backgroundColor: AppColors.darkSurface,
+            title: Text(
+              'Cerrar sesión',
+              style: AppTypography.subheading(color: AppColors.paperWhite),
+            ),
+            content: Text(
+              '¿Seguro que quieres salir de tu cuenta?',
+              style: AppTypography.body(color: AppColors.pencilGray),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: Text(
+                  'CANCELAR',
+                  style: AppTypography.label(color: AppColors.pencilGray),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(
+                  'SALIR',
+                  style: AppTypography.label(color: AppColors.heartPink),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (confirmed) await auth.signOut();
   }
 
   @override
@@ -162,6 +200,30 @@ class ProfileScreen extends StatelessWidget {
                     child: Text(
                       'ADMINISTRAR',
                       style: AppTypography.label(color: AppColors.sparkBlue),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s24),
+                SizedBox(
+                  height: 52,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _confirmSignOut(context),
+                    icon: const Icon(Icons.logout_rounded),
+                    label: Text(
+                      'CERRAR SESIÓN',
+                      style: AppTypography.label(color: AppColors.heartPink),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.heartPink,
+                      side: const BorderSide(
+                        color: AppColors.darkBorder,
+                        width: 2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppRadius.standard,
+                        ),
+                      ),
                     ),
                   ),
                 ),
