@@ -39,6 +39,27 @@ abstract final class AppColors {
   static const Color leaguePurple = Color(0xFFCE82FF);
   static const Color superViolet = Color(0xFF9069F3);
 
+  // --- Lips 3D (tono mas oscuro bajo cada boton/ficha) ---
+  static const Color eagerGreenLip = Color(0xFF58A700);
+  static const Color sparkBlueLip = Color(0xFF1899D6);
+  static const Color heartPinkLip = Color(0xFFCC3B3B);
+  static const Color streakOrangeLip = Color(0xFFCC7A00);
+  static const Color superVioletLip = Color(0xFFA560E8);
+  static const Color leaguePurpleLip = Color(0xFFA560E8);
+  static const Color darkSurfaceLip = Color(0xFF16232A);
+  static const Color lockedNodeLip = Color(0xFF22323A);
+
+  // --- Feedback de leccion (modo oscuro) ---
+  static const Color feedbackCorrectBg = Color(0xFF1D3A22);
+  static const Color feedbackWrongBg = Color(0xFF3A2228);
+
+  // --- Desafios ---
+  static const Color challengePanel = Color(0xFF3A2E1E);
+
+  // --- Icono de perfil del nav (silueta en dos tonos) ---
+  static const Color navProfileHead = Color(0xFF4FC3F7);
+  static const Color navProfileBody = Color(0xFF1899D6);
+
   // --- Liga ---
   static const Color leagueGradientStart = Color(0xFF6C4CF1);
   static const Color leagueGradientEnd = Color(0xFF1CB0F6);

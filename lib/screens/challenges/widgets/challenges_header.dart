@@ -7,7 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../widgets/duo_mascot.dart';
 import '../../../widgets/progress_bar.dart';
 
-/// Cabecera azul de los desafios con la mascota y el progreso del mes.
+/// Cabecera naranja de los desafios con el progreso del mes.
 class ChallengesHeader extends StatelessWidget {
   const ChallengesHeader({
     super.key,
@@ -25,12 +25,10 @@ class ChallengesHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final bool isComplete = points >= pointsTarget;
-    final int remaining = (pointsTarget - points).clamp(0, pointsTarget);
 
     return Container(
       width: double.infinity,
-      color: AppColors.sparkBlue,
+      color: AppColors.streakOrange,
       child: SafeArea(
         bottom: false,
         child: Stack(
@@ -90,19 +88,9 @@ class ChallengesHeader extends StatelessWidget {
                         ProgressBar(
                           value: points.toDouble(),
                           target: pointsTarget.toDouble(),
+                          color: AppColors.streakOrange,
                           unit: 'pts',
                           showCompletionIcon: true,
-                        ),
-                        const SizedBox(height: AppSpacing.s8),
-                        Text(
-                          isComplete
-                              ? l10n.challengeComplete
-                              : l10n.pointsRemaining(remaining),
-                          style: AppTypography.label(
-                            color: isComplete
-                                ? AppColors.eagerGreen
-                                : AppColors.pencilGray,
-                          ),
                         ),
                       ],
                     ),

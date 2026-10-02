@@ -4,6 +4,7 @@ import '../core/theme/app_colors.dart';
 import '../core/theme/app_spacing.dart';
 import '../core/theme/app_typography.dart';
 import '../l10n/app_localizations.dart';
+import 'duo_button.dart';
 
 /// Vista de error con boton de reintento para pantallas que cargan datos.
 class ErrorRetryView extends StatelessWidget {
@@ -48,12 +49,11 @@ class ErrorRetryView extends StatelessWidget {
               ),
             ],
             const SizedBox(height: AppSpacing.s24),
-            OutlinedButton(
+            DuoButton(
+              label: l10n.retry,
+              variant: DuoButtonVariant.secondary,
+              expand: false,
               onPressed: onRetry,
-              child: Text(
-                l10n.retry.toUpperCase(),
-                style: AppTypography.label(color: AppColors.paperWhite),
-              ),
             ),
           ],
         ),

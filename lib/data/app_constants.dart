@@ -5,6 +5,12 @@ abstract final class AppConstants {
   static const String sectionTitle = 'Parejas: Expresa tus sentimientos';
 
   // --- Desafios ---
-  static const String challengePartner = 'Roxsana';
-  static const int challengePartnerExp = 422;
+  static const String challengePartner = 'Prathishta';
+  static const int challengePartnerExp = 914;
+
+  /// EXP propio en el reto entre amigos.
+  static const int challengeMineExp = 395;
+
+  /// Meta de EXP del reto entre amigos (suma de ambos).
+  static const int friendChallengeTarget = 1800;
 }

@@ -15,7 +15,8 @@ class TopStatsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stats = context.watch<UserStatsProvider>().stats;
+    final UserStatsProvider userStats = context.watch<UserStatsProvider>();
+    final stats = userStats.stats;
     final AppLocalizations l10n = AppLocalizations.of(context);
 
     return Padding(
@@ -55,12 +56,16 @@ class TopStatsBar extends StatelessWidget {
             valueColor: AppColors.paperWhite,
           ),
           StatChip(
-            leading: const Icon(
-              Icons.bolt_rounded,
-              color: AppColors.superViolet,
+            leading: Icon(
+              stats.hasUnlimitedHearts
+                  ? Icons.bolt_rounded
+                  : Icons.favorite_rounded,
+              color: stats.hasUnlimitedHearts
+                  ? AppColors.superViolet
+                  : AppColors.heartPink,
               size: 24,
             ),
-            value: stats.hasUnlimitedHearts ? '∞' : '5',
+            value: stats.hasUnlimitedHearts ? '∞' : '${userStats.hearts}',
             valueColor: AppColors.paperWhite,
           ),
         ],

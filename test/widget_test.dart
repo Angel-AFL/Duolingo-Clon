@@ -12,6 +12,8 @@ import 'package:duolingo_clon/data/repositories/learning_path_repository.dart';
 import 'package:duolingo_clon/models/lesson_exercise.dart';
 import 'package:duolingo_clon/models/lesson_node.dart';
 import 'package:duolingo_clon/models/lesson_outcome.dart';
+import 'package:duolingo_clon/models/user_stats.dart';
+import 'package:duolingo_clon/data/repositories/user_stats_repository.dart';
 import 'package:duolingo_clon/providers/auth_provider.dart';
 import 'package:duolingo_clon/providers/challenges_provider.dart';
 import 'package:duolingo_clon/providers/league_provider.dart';
@@ -85,6 +87,8 @@ Future<void> _playLesson0(WidgetTester tester) async {
 
   // Ejercicio 1: banco de palabras.
   for (final String word in <String>['The', 'boy', 'eats', 'bread']) {
+    await tester.ensureVisible(find.text(word));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(word));
     await tester.pumpAndSettle();
   }
@@ -143,10 +147,51 @@ class _ThrowingPathRepository implements LearningPathRepository {
   Future<void> saveNodes(List<LessonNode> nodes) async {}
 }
 
+/// Usuario sin Súper, para probar la mecanica de corazones.
+const UserStats _nonSuperStats = UserStats(
+  courseFlag: '🇺🇸',
+  courseCount: 69,
+  streakDays: 1178,
+  gems: 11696,
+  hasUnlimitedHearts: false,
+);
+
+class _FakeStatsRepository implements UserStatsRepository {
+  _FakeStatsRepository(this._stats);
+
+  final UserStats _stats;
+
+  @override
+  Future<UserStats> fetchStats() async => _stats;
+}
+
+/// App con un [UserStatsProvider] inyectado (p. ej. sin corazones infinitos).
+Widget _appWithStats(UserStatsRepository repository) {
+  final List<ChangeNotifierProvider> providers = _providers()
+    ..removeWhere(
+      (ChangeNotifierProvider p) =>
+          p is ChangeNotifierProvider<UserStatsProvider>,
+    );
+  providers.insert(
+    0,
+    ChangeNotifierProvider<UserStatsProvider>(
+      create: (_) => UserStatsProvider(repository: repository),
+    ),
+  );
+  return MultiProvider(providers: providers, child: const DuolingoApp());
+}
+
 void main() {
   setUpAll(() async {
     GoogleFonts.config.allowRuntimeFetching = false;
     await initializeDateFormatting('es');
+
+    // El nodo activo del home late en bucle; con "reducir movimiento" el
+    // controlador no arranca y `pumpAndSettle` puede terminar.
+    final TestWidgetsFlutterBinding binding =
+        TestWidgetsFlutterBinding.ensureInitialized();
+    binding.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
   });
 
   testWidgets('login autentica y navega al home', (WidgetTester tester) async {
@@ -173,20 +218,20 @@ void main() {
     await tester.tap(
       find.descendant(
         of: find.byType(AppBottomNav),
-        matching: find.byIcon(Icons.emoji_events_rounded),
+        matching: find.byTooltip('Liga'),
       ),
     );
     await tester.pumpAndSettle();
-    expect(nav().selectedIndex, 4);
+    expect(nav().selectedIndex, 2);
 
     await tester.tap(
       find.descendant(
         of: find.byType(AppBottomNav),
-        matching: find.byIcon(Icons.more_horiz_rounded),
+        matching: find.byTooltip('Perfil'),
       ),
     );
     await tester.pumpAndSettle();
-    expect(nav().selectedIndex, 5);
+    expect(nav().selectedIndex, 3);
   });
 
   testWidgets('liga muestra la tabla de posiciones', (
@@ -203,6 +248,10 @@ void main() {
   testWidgets('desafios muestra los retos del dia', (
     WidgetTester tester,
   ) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     await tester.pumpWidget(_screen(const ChallengesScreen()));
     await tester.pumpAndSettle();
 
@@ -210,6 +259,8 @@ void main() {
       find.text('Desafío de ${monthNameEs(DateTime.now())}'),
       findsOneWidget,
     );
+    expect(find.text('DESAFÍO ENTRE AMIGOS'), findsOneWidget);
+    expect(find.text('Gana 1800 EXP'), findsOneWidget);
     expect(find.text('DESAFÍOS DEL DÍA'), findsOneWidget);
     expect(find.text('Gana 50 EXP'), findsOneWidget);
   });
@@ -252,6 +303,28 @@ void main() {
 
     expect(find.text('Días de racha'), findsOneWidget);
     expect(find.text('PERSONAL'), findsOneWidget);
+  });
+
+  testWidgets('perfil muestra super familia, medallas y logros', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(_screen(const ProfileScreen()));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text('LOGROS'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('SÚPER FAMILIA'), findsOneWidget);
+    expect(find.text('MEDALLAS MENSUALES'), findsOneWidget);
+    expect(find.text('LOGROS'), findsOneWidget);
   });
 
   testWidgets('el perchero cambia el avatar por un preset', (
@@ -362,6 +435,8 @@ void main() {
 
     // Ejercicio 1: banco de palabras.
     for (final String word in <String>['The', 'boy', 'eats', 'bread']) {
+      await tester.ensureVisible(find.text(word));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(word));
       await tester.pumpAndSettle();
     }
@@ -428,6 +503,55 @@ void main() {
     await tester.tap(find.text('CONTINUAR'));
     await tester.pumpAndSettle();
     expect(bar().results.first, isTrue);
+  });
+
+  test('consumeHeart resta y se bloquea a cero', () async {
+    final UserStatsProvider stats = UserStatsProvider(
+      repository: _FakeStatsRepository(_nonSuperStats),
+    );
+    await stats.load();
+    expect(stats.hearts, UserStatsProvider.maxHearts);
+
+    for (int i = 0; i < UserStatsProvider.maxHearts; i++) {
+      stats.consumeHeart();
+    }
+    expect(stats.hearts, 0);
+    expect(stats.isOutOfHearts, isTrue);
+
+    stats.consumeHeart();
+    expect(stats.hearts, 0);
+
+    stats.refillHearts();
+    expect(stats.hearts, UserStatsProvider.maxHearts);
+    expect(stats.isOutOfHearts, isFalse);
+  });
+
+  testWidgets('fallar un ejercicio resta un corazon', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      _appWithStats(_FakeStatsRepository(_nonSuperStats)),
+    );
+    await tester.pumpAndSettle();
+    await _login(tester);
+
+    final BuildContext homeContext = tester.element(find.byType(HomeScreen));
+    final UserStatsProvider stats = Provider.of<UserStatsProvider>(
+      homeContext,
+      listen: false,
+    );
+    final int before = stats.hearts;
+
+    await tester.tap(find.byIcon(Icons.star_rounded).first);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('the bread'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('COMPROBAR'));
+    await tester.pumpAndSettle();
+
+    expect(stats.hearts, before - 1);
+    expect(find.text('Respuesta correcta:'), findsOneWidget);
   });
 
   test('un error se registra al continuar', () async {
@@ -670,7 +794,7 @@ void main() {
     await tester.tap(
       find.descendant(
         of: find.byType(AppBottomNav),
-        matching: find.byIcon(Icons.more_horiz_rounded),
+        matching: find.byTooltip('Perfil'),
       ),
     );
     await tester.pumpAndSettle();

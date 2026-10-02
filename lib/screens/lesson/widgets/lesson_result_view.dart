@@ -95,8 +95,15 @@ class _ResultStat extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.s16),
       decoration: BoxDecoration(
         color: AppColors.darkCard,
-        borderRadius: BorderRadius.circular(AppRadius.standard),
+        borderRadius: BorderRadius.circular(AppRadius.button),
         border: Border.all(color: color, width: 2),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: color.withValues(alpha: 0.35),
+            offset: const Offset(0, AppSpacing.lip),
+            blurRadius: 0,
+          ),
+        ],
       ),
       child: Column(
         children: <Widget>[

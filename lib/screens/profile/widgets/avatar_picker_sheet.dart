@@ -9,6 +9,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/avatar_preset.dart';
 import '../../../providers/profile_provider.dart';
+import '../../../widgets/duo_button.dart';
 
 /// Abre la hoja inferior para cambiar la foto de perfil.
 Future<void> showAvatarPickerSheet(BuildContext context) {
@@ -195,13 +196,11 @@ class _SourceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
+    return DuoButton(
+      label: label,
+      icon: icon,
+      variant: DuoButtonVariant.secondary,
       onPressed: enabled ? onTap : null,
-      icon: Icon(icon),
-      label: Text(
-        label,
-        style: AppTypography.label(color: AppColors.paperWhite),
-      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import '../models/league_entry.dart';
 import '../models/lesson_exercise.dart';
 import '../models/lesson_node.dart';
 import '../models/profile_info.dart';
+import '../models/profile_showcase.dart';
 import '../models/streak_calendar.dart';
 import '../models/user_stats.dart';
 
@@ -130,8 +131,6 @@ abstract final class MockData {
   // --- Desafios (boceto `desafios.jpeg`) ---
   static const int challengePoints = 27;
   static const int challengePointsTarget = 60;
-  static const String challengePartner = 'Roxsana';
-  static const int challengePartnerExp = 422;
 
   static const List<DailyChallenge> dailyChallenges = <DailyChallenge>[
     DailyChallenge(
@@ -177,6 +176,47 @@ abstract final class MockData {
     FriendStreak(name: 'Diana', days: 107, avatarColor: Color(0xFF6EC1E4)),
     FriendStreak(name: 'Hugo', days: 14, avatarColor: Color(0xFFE85D5D)),
   ];
+
+  // --- Vitrina del perfil (Súper familia, medallas y logros) ---
+  static const ProfileShowcase profileShowcase = ProfileShowcase(
+    family: <SuperFamilyMember>[
+      SuperFamilyMember(name: 'Lucía', color: Color(0xFFB5651D)),
+      SuperFamilyMember(name: 'Mateo', color: Color(0xFF7BC950)),
+      SuperFamilyMember(name: 'Sofía', color: Color(0xFFF2C79B)),
+      SuperFamilyMember(name: 'Diego', color: Color(0xFF6EC1E4)),
+    ],
+    medals: <MonthlyMedal>[
+      MonthlyMedal(color: Color(0xFF1CB0F6), icon: Icons.emoji_events_rounded),
+      MonthlyMedal(
+        color: Color(0xFF58CC02),
+        icon: Icons.local_fire_department_rounded,
+      ),
+      MonthlyMedal(color: Color(0xFFFF9600), icon: Icons.bolt_rounded),
+      MonthlyMedal(color: Color(0xFFCE82FF), icon: Icons.school_rounded),
+    ],
+    achievements: <Achievement>[
+      Achievement(
+        value: 40,
+        color: Color(0xFFFF4B4B),
+        icon: Icons.menu_book_rounded,
+      ),
+      Achievement(
+        value: 75,
+        color: Color(0xFFFFC800),
+        icon: Icons.local_fire_department_rounded,
+      ),
+      Achievement(
+        value: 25,
+        color: Color(0xFF1CB0F6),
+        icon: Icons.diamond_rounded,
+      ),
+      Achievement(
+        value: 1000,
+        color: Color(0xFFCE82FF),
+        icon: Icons.bolt_rounded,
+      ),
+    ],
+  );
 
   // --- Ejercicios de las lecciones (espejo del seed de Supabase) ---
   static const List<LessonExercise> lessonExercises = <LessonExercise>[

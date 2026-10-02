@@ -7,6 +7,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/lesson_exercise.dart';
 import '../../../providers/lesson_provider.dart';
+import '../../../widgets/duo_choice_tile.dart';
 
 /// Ejercicio de banco de palabras: armar la traduccion tocando fichas.
 class WordBankExercise extends StatelessWidget {
@@ -104,35 +105,14 @@ class _WordChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color border = selected ? AppColors.sparkBlue : AppColors.darkBorder;
-    final Color text = dimmed
-        ? AppColors.pathLockedText
-        : selected
-        ? AppColors.sparkBlue
-        : AppColors.paperWhite;
-
-    return Material(
-      color: dimmed ? Colors.transparent : AppColors.darkSurface,
-      borderRadius: BorderRadius.circular(AppRadius.standard),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.standard),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s12,
-            vertical: AppSpacing.s8,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: border, width: 2),
-            borderRadius: BorderRadius.circular(AppRadius.standard),
-          ),
-          child: Text(
-            label,
-            style: AppTypography.body(
-              color: text,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
+    return DuoChoiceTile(
+      label: label,
+      state: selected ? DuoChoiceState.selected : DuoChoiceState.idle,
+      dimmed: dimmed,
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s12,
+        vertical: AppSpacing.s8,
       ),
     );
   }

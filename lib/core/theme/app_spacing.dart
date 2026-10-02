@@ -22,10 +22,17 @@ abstract final class AppSpacing {
 
   /// Separacion entre elementos.
   static const double elementGap = 12;
+
+  /// Altura del borde inferior solido de los botones 3D de Duolingo.
+  static const double lip = 4;
 }
 
 /// Radios del skill: todo usa esquinas redondeadas de 12px.
 abstract final class AppRadius {
   static const double standard = 12;
+
+  /// Radio de botones y fichas con relieve 3D.
+  static const double button = 16;
+
   static const double pill = 100;
 }

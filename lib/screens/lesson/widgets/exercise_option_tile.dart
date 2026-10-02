@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
+import '../../../widgets/duo_choice_tile.dart';
 
 /// Estado visual de una opcion de ejercicio.
 enum ExerciseOptionState { idle, selected, correct, wrong }
 
 /// Opcion seleccionable reutilizada por los ejercicios de opcion multiple
 /// y de completar la oracion.
+///
+/// Delega el relieve 3D en [DuoChoiceTile].
 class ExerciseOptionTile extends StatelessWidget {
   const ExerciseOptionTile({
     super.key,
@@ -23,52 +23,19 @@ class ExerciseOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color border;
-    final Color background;
-    final Color text;
-    switch (state) {
-      case ExerciseOptionState.selected:
-        border = AppColors.sparkBlue;
-        background = AppColors.sparkBlue.withValues(alpha: 0.15);
-        text = AppColors.sparkBlue;
-      case ExerciseOptionState.correct:
-        border = AppColors.eagerGreen;
-        background = AppColors.eagerGreen.withValues(alpha: 0.18);
-        text = AppColors.eagerGreen;
-      case ExerciseOptionState.wrong:
-        border = AppColors.heartPink;
-        background = AppColors.heartPink.withValues(alpha: 0.18);
-        text = AppColors.heartPink;
-      case ExerciseOptionState.idle:
-        border = AppColors.darkBorder;
-        background = AppColors.darkSurface;
-        text = AppColors.paperWhite;
-    }
+    return DuoChoiceTile(label: label, state: _map(state), onTap: onTap);
+  }
 
-    return Material(
-      color: background,
-      borderRadius: BorderRadius.circular(AppRadius.standard),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.standard),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s16,
-            vertical: AppSpacing.s16,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: border, width: 2),
-            borderRadius: BorderRadius.circular(AppRadius.standard),
-          ),
-          child: Text(
-            label,
-            style: AppTypography.body(
-              color: text,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
-      ),
-    );
+  DuoChoiceState _map(ExerciseOptionState state) {
+    switch (state) {
+      case ExerciseOptionState.idle:
+        return DuoChoiceState.idle;
+      case ExerciseOptionState.selected:
+        return DuoChoiceState.selected;
+      case ExerciseOptionState.correct:
+        return DuoChoiceState.correct;
+      case ExerciseOptionState.wrong:
+        return DuoChoiceState.wrong;
+    }
   }
 }

@@ -16,7 +16,7 @@ import 'widgets/top_stats_bar.dart';
 /// Pantalla principal: ruta de aprendizaje (tema oscuro, `home.jpeg`).
 ///
 /// Es el cuerpo de la pestana Home dentro de `AppShell`; el bottom nav lo
-/// aporta el shell.
+/// aporta el shell. El banner de seccion queda fijo al hacer scroll.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -52,21 +52,84 @@ class HomeScreen extends StatelessWidget {
       if (path.isLoading) return const HomeSkeleton();
     }
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.s16,
-        AppSpacing.s8,
-        AppSpacing.s16,
-        AppSpacing.s24,
-      ),
-      children: <Widget>[
-        const SectionBanner(
-          stage: AppConstants.sectionStage,
-          title: AppConstants.sectionTitle,
+    final List<LessonNode> nodes = path.nodes;
+    final int completed = nodes
+        .where((LessonNode n) => n.status == LessonNodeStatus.completed)
+        .length;
+    final double progress = nodes.isEmpty ? 0 : completed / nodes.length;
+
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: _BannerHeaderDelegate(
+            stage: AppConstants.sectionStage,
+            title: AppConstants.sectionTitle,
+            progress: progress,
+          ),
         ),
-        const SizedBox(height: AppSpacing.s24),
-        LessonPath(onNodeTap: (LessonNode node) => _onNodeTap(context, node)),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.s16,
+            0,
+            AppSpacing.s16,
+            AppSpacing.s24,
+          ),
+          sliver: SliverToBoxAdapter(
+            child: LessonPath(
+              onNodeTap: (LessonNode node) => _onNodeTap(context, node),
+            ),
+          ),
+        ),
       ],
     );
+  }
+}
+
+/// Header fijo del banner de seccion.
+class _BannerHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _BannerHeaderDelegate({
+    required this.stage,
+    required this.title,
+    required this.progress,
+  });
+
+  final String stage;
+  final String title;
+  final double progress;
+
+  static const double _extent = 160;
+
+  @override
+  double get minExtent => _extent;
+
+  @override
+  double get maxExtent => _extent;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.s16,
+          AppSpacing.s8,
+          AppSpacing.s16,
+          AppSpacing.s8,
+        ),
+        child: SectionBanner(stage: stage, title: title, progress: progress),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _BannerHeaderDelegate oldDelegate) {
+    return oldDelegate.stage != stage ||
+        oldDelegate.title != title ||
+        oldDelegate.progress != progress;
   }
 }

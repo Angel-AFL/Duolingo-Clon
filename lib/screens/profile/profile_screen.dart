@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
+import '../../data/mock_data.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/friend_streak.dart';
 import '../../models/profile_info.dart';
@@ -14,11 +15,16 @@ import '../../providers/profile_provider.dart';
 import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/duo_button.dart';
 import '../../widgets/error_retry_view.dart';
+import '../../widgets/secondary_button.dart';
 import '../../widgets/section_label.dart';
+import 'widgets/achievements_row.dart';
 import 'widgets/avatar_picker_sheet.dart';
 import 'widgets/friend_streak_item.dart';
+import 'widgets/medals_row.dart';
 import 'widgets/profile_header.dart';
+import 'widgets/super_family_row.dart';
 
 /// Pantalla de perfil (boceto `perfil.jpeg`, tema oscuro).
 class ProfileScreen extends StatelessWidget {
@@ -122,28 +128,21 @@ class ProfileScreen extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: OutlinedButton.icon(
+                      child: SecondaryButton(
+                        label: l10n.addFriends,
+                        icon: Icons.person_add_alt_1_rounded,
                         onPressed: () {},
-                        icon: const Icon(Icons.person_add_alt_1_rounded),
-                        label: Text(
-                          l10n.addFriends.toUpperCase(),
-                          style: AppTypography.label(
-                            color: AppColors.paperWhite,
-                          ),
-                        ),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.s12),
                     SizedBox(
                       width: 52,
-                      child: OutlinedButton(
+                      child: DuoButton(
+                        label: '',
+                        icon: Icons.qr_code_2_rounded,
+                        variant: DuoButtonVariant.secondary,
+                        expand: false,
                         onPressed: () {},
-                        style: const ButtonStyle(
-                          padding: WidgetStatePropertyAll<EdgeInsets>(
-                            EdgeInsets.zero,
-                          ),
-                        ),
-                        child: const Icon(Icons.qr_code_2_rounded),
                       ),
                     ),
                   ],
@@ -182,19 +181,36 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: AppSpacing.s12),
+                SuperFamilyRow(members: MockData.profileShowcase.family),
                 const SizedBox(height: AppSpacing.s24),
-                OutlinedButton.icon(
+                SectionLabel(
+                  label: l10n.monthlyMedals,
+                  trailing: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.pencilGray,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s12),
+                MedalsRow(medals: MockData.profileShowcase.medals),
+                const SizedBox(height: AppSpacing.s24),
+                SectionLabel(
+                  label: l10n.achievements,
+                  trailing: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.pencilGray,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s12),
+                AchievementsRow(
+                  achievements: MockData.profileShowcase.achievements,
+                ),
+                const SizedBox(height: AppSpacing.s24),
+                DuoButton(
+                  label: l10n.signOut,
+                  icon: Icons.logout_rounded,
+                  variant: DuoButtonVariant.secondaryError,
                   onPressed: () => _confirmSignOut(context),
-                  icon: const Icon(Icons.logout_rounded),
-                  label: Text(
-                    l10n.signOut.toUpperCase(),
-                    style: AppTypography.label(color: AppColors.heartPink),
-                  ),
-                  style: const ButtonStyle(
-                    foregroundColor: WidgetStatePropertyAll<Color>(
-                      AppColors.heartPink,
-                    ),
-                  ),
                 ),
               ],
             ),

@@ -20,8 +20,18 @@
   "challengesLoadError": "No se pudieron cargar los desafíos",
   "giveCheer": "Dar toque",
   "giveGift": "Dar regalo",
+  "friendChallenge": "Desafío entre amigos",
+  "friendChallengeHours": "1H",
+  "sent": "Enviado",
+  "you": "Tú",
+  "earnExp": "Gana {target} EXP",
+  "@earnExp": {
+    "placeholders": {
+      "target": { "type": "int" }
+    }
+  },
   "dailyChallenges": "Desafíos del día",
-  "hoursLeft": "12H",
+  "hoursLeft": "3H",
   "emptyChallenges": "No hay desafíos activos por ahora",
   "challengeOf": "Desafío de {month}",
   "@challengeOf": {
@@ -64,6 +74,9 @@
   "friendStreaks": "Rachas entre amigos",
   "superFamily": "Súper familia",
   "manage": "Administrar",
+  "addMember": "Agregar miembro",
+  "monthlyMedals": "Medallas mensuales",
+  "achievements": "Logros",
   "courses": "Cursos",
   "following": "Siguiendo",
   "followers": "Seguidores",
@@ -126,10 +139,22 @@
   "freezesUsed": "Protectores usados",
   "weekdays": "D,L,Ma,Mi,J,V,S",
 
+  "start": "Empezar",
+
   "check": "Comprobar",
   "correct": "¡Correcto!",
   "correctAnswer": "Respuesta correcta:",
   "continueLabel": "Continuar",
+  "noHeartsTitle": "¡Te quedaste sin corazones!",
+  "noHeartsBody": "Recarga tus corazones para seguir practicando.",
+  "refillHearts": "Recargar",
+  "exitLesson": "Salir",
+  "a11yHearts": "Corazones: {count}",
+  "@a11yHearts": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
   "lessonComplete": "¡Lección completada!",
   "lessonCompleteSubtitle": "Sigue así, cada lección te acerca a tu meta.",
   "totalExp": "EXP TOTAL",
@@ -141,11 +166,9 @@
   "matchPairs": "Empareja las parejas",
 
   "navHome": "Inicio",
-  "navPractice": "Práctica",
-  "navGems": "Gemas",
-  "navHearts": "Corazones",
+  "navChallenges": "Desafíos",
   "navLeague": "Liga",
-  "navMore": "Más",
+  "navProfile": "Perfil",
   "a11yLessonNode": "Lección {position}",
   "@a11yLessonNode": {
     "placeholders": {
