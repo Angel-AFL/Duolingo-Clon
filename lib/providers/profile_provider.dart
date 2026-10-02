@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
 import '../data/mock_data.dart';
@@ -25,11 +23,20 @@ class ProfileProvider extends ChangeNotifier with LoadableProvider {
     _profile = await _repository.fetchProfile();
   });
 
-  /// Suma EXP al total del perfil y lo persiste.
-  void addExp(int amount) {
+  /// Suma EXP al total del perfil de forma optimista y lo persiste.
+  ///
+  /// Si la escritura falla, revierte el cambio local y expone `writeError`.
+  Future<void> addExp(int amount) async {
+    final ProfileInfo previous = _profile;
     _profile = _profile.copyWith(totalExp: _profile.totalExp + amount);
     notifyListeners();
-    unawaited(_repository.addExp(amount));
+    try {
+      await _repository.addExp(amount);
+      setWriteError(null);
+    } catch (error) {
+      _profile = previous;
+      setWriteError(error);
+    }
   }
 
   /// Sube una imagen elegida por el usuario y actualiza el avatar.

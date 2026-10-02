@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
 import '../data/mock_data.dart';
@@ -22,16 +20,4 @@ class UserStatsProvider extends ChangeNotifier with LoadableProvider {
   Future<void> load() => runLoad(() async {
     _stats = await _repository.fetchStats();
   });
-
-  void addGems(int amount) {
-    _stats = UserStats(
-      courseFlag: _stats.courseFlag,
-      courseCount: _stats.courseCount,
-      streakDays: _stats.streakDays,
-      gems: _stats.gems + amount,
-      hasUnlimitedHearts: _stats.hasUnlimitedHearts,
-    );
-    notifyListeners();
-    unawaited(_repository.updateStats(_stats));
-  }
 }

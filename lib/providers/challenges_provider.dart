@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
 import '../data/mock_data.dart';
@@ -45,7 +43,10 @@ class ChallengesProvider extends ChangeNotifier with LoadableProvider {
 
   /// Registra una leccion: suma su EXP al desafio del mes y avanza cada reto
   /// segun su metrica real (EXP ganado, racha de aciertos o precision).
-  void recordLesson(LessonOutcome outcome) {
+  ///
+  /// La UI se actualiza al instante; si el guardado falla se expone
+  /// `writeError` sin revertir el progreso ya mostrado.
+  Future<void> recordLesson(LessonOutcome outcome) async {
     _points = (_points + outcome.exp).clamp(0, _pointsTarget);
     for (int i = 0; i < _challenges.length; i++) {
       final DailyChallenge challenge = _challenges[i];
@@ -67,7 +68,12 @@ class ChallengesProvider extends ChangeNotifier with LoadableProvider {
       );
     }
     notifyListeners();
-    unawaited(_repository.saveChallenges(_points, _challenges));
+    try {
+      await _repository.saveChallenges(_points, _challenges);
+      setWriteError(null);
+    } catch (error) {
+      setWriteError(error);
+    }
   }
 
   void giveCheer() {

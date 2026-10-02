@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
 import '../data/mock_data.dart';
@@ -44,16 +42,25 @@ class LeagueProvider extends ChangeNotifier with LoadableProvider {
     }
   });
 
-  /// Suma EXP al usuario actual y recalcula posiciones.
-  void addExp(int amount) {
+  /// Suma EXP al usuario actual de forma optimista y recalcula posiciones.
+  ///
+  /// Si la escritura falla, revierte el cambio local y expone `writeError`.
+  Future<void> addExp(int amount) async {
     final int index = _entries.indexWhere((LeagueEntry e) => e.isCurrentUser);
     if (index == -1) return;
 
+    final List<LeagueEntry> previous = _entries;
     _entries[index] = _entries[index].copyWith(
       exp: _entries[index].exp + amount,
     );
     _entries = _sortedByExpDesc(_entries);
     notifyListeners();
-    unawaited(_repository.updateCurrentUserExp(currentUser.exp));
+    try {
+      await _repository.addExp(amount);
+      setWriteError(null);
+    } catch (error) {
+      _entries = previous;
+      setWriteError(error);
+    }
   }
 }

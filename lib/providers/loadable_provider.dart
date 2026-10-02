@@ -10,11 +10,16 @@ mixin LoadableProvider on ChangeNotifier {
   bool _isLoading = false;
   bool _hasLoaded = false;
   Object? _error;
+  Object? _writeError;
 
   bool get isLoading => _isLoading;
   bool get hasLoaded => _hasLoaded;
   bool get hasError => _error != null;
   String? get error => _error?.toString();
+
+  /// Error de la ultima escritura (guardado) fallida, si lo hubiera.
+  bool get hasWriteError => _writeError != null;
+  String? get writeError => _writeError?.toString();
 
   /// Ejecuta [body] marcando el estado de carga y capturando cualquier error.
   ///
@@ -45,6 +50,13 @@ mixin LoadableProvider on ChangeNotifier {
   @protected
   void setError(Object? error) {
     _error = error;
+    notifyListeners();
+  }
+
+  /// Registra (o limpia) el ultimo error de escritura.
+  @protected
+  void setWriteError(Object? error) {
+    _writeError = error;
     notifyListeners();
   }
 

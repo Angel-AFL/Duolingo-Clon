@@ -65,10 +65,16 @@ class _LessonScreenState extends State<LessonScreen> {
       accuracy: lesson.total == 0 ? 0 : lesson.correctCount / lesson.total,
       bestStreak: lesson.bestStreak,
     );
-    challenges.recordLesson(outcome);
-    profile.addExp(_lessonExp);
-    league.addExp(_lessonExp);
+
+    // Las escrituras actualizan la UI al instante y capturan sus propios
+    // errores (`writeError`), asi que no bloquean el cierre.
+    final List<Future<void>> writes = <Future<void>>[
+      challenges.recordLesson(outcome),
+      profile.addExp(_lessonExp),
+      league.addExp(_lessonExp),
+    ];
     Navigator.of(context).maybePop();
+    await Future.wait(writes);
 
     if (wasActive) {
       try {
