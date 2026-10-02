@@ -6,9 +6,10 @@ import '../data/mock_data.dart';
 import '../data/repositories/challenges_repository.dart';
 import '../models/daily_challenge.dart';
 import '../models/lesson_outcome.dart';
+import 'loadable_provider.dart';
 
 /// Estado de los desafios: puntos del mes y retos del dia.
-class ChallengesProvider extends ChangeNotifier {
+class ChallengesProvider extends ChangeNotifier with LoadableProvider {
   ChallengesProvider({ChallengesRepository? repository})
     : _repository = repository ?? MockChallengesRepository();
 
@@ -24,7 +25,6 @@ class ChallengesProvider extends ChangeNotifier {
   int _pointsTarget = MockData.challengePointsTarget;
   bool _cheered = false;
   bool _gifted = false;
-  bool _isLoading = false;
   List<DailyChallenge> _challenges = List<DailyChallenge>.of(
     MockData.dailyChallenges,
   );
@@ -33,23 +33,15 @@ class ChallengesProvider extends ChangeNotifier {
   int get pointsTarget => _pointsTarget;
   bool get cheered => _cheered;
   bool get gifted => _gifted;
-  bool get isLoading => _isLoading;
   List<DailyChallenge> get challenges =>
       List<DailyChallenge>.unmodifiable(_challenges);
 
-  Future<void> load() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final ChallengeSnapshot snapshot = await _repository.fetchChallenges();
-      _points = snapshot.points;
-      _pointsTarget = snapshot.pointsTarget;
-      if (snapshot.challenges.isNotEmpty) _challenges = snapshot.challenges;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
+  Future<void> load() => runLoad(() async {
+    final ChallengeSnapshot snapshot = await _repository.fetchChallenges();
+    _points = snapshot.points;
+    _pointsTarget = snapshot.pointsTarget;
+    if (snapshot.challenges.isNotEmpty) _challenges = snapshot.challenges;
+  });
 
   /// Registra una leccion: suma su EXP al desafio del mes y avanza cada reto
   /// segun su metrica real (EXP ganado, racha de aciertos o precision).

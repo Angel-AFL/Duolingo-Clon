@@ -5,9 +5,10 @@ import 'package:flutter/foundation.dart';
 import '../data/mock_data.dart';
 import '../data/repositories/league_repository.dart';
 import '../models/league_entry.dart';
+import 'loadable_provider.dart';
 
 /// Estado de la liga: tabla de posiciones y EXP del usuario.
-class LeagueProvider extends ChangeNotifier {
+class LeagueProvider extends ChangeNotifier with LoadableProvider {
   LeagueProvider({LeagueRepository? repository})
     : _repository = repository ?? MockLeagueRepository();
 
@@ -16,7 +17,6 @@ class LeagueProvider extends ChangeNotifier {
   List<LeagueEntry> _entries = _sortedByExpDesc(MockData.leagueEntries);
   String _leagueName = MockData.leagueName;
   int _daysLeft = MockData.leagueDaysLeft;
-  bool _isLoading = false;
 
   /// Ordena por EXP descendente (mayor puntaje primero) y recalcula rangos.
   static List<LeagueEntry> _sortedByExpDesc(List<LeagueEntry> entries) {
@@ -30,27 +30,19 @@ class LeagueProvider extends ChangeNotifier {
 
   String get leagueName => _leagueName;
   int get daysLeft => _daysLeft;
-  bool get isLoading => _isLoading;
   List<LeagueEntry> get entries => List<LeagueEntry>.unmodifiable(_entries);
 
   LeagueEntry get currentUser =>
       _entries.firstWhere((LeagueEntry e) => e.isCurrentUser);
 
-  Future<void> load() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final LeagueSnapshot snapshot = await _repository.fetchLeague();
-      _leagueName = snapshot.name;
-      _daysLeft = snapshot.daysLeft;
-      if (snapshot.entries.isNotEmpty) {
-        _entries = _sortedByExpDesc(snapshot.entries);
-      }
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  Future<void> load() => runLoad(() async {
+    final LeagueSnapshot snapshot = await _repository.fetchLeague();
+    _leagueName = snapshot.name;
+    _daysLeft = snapshot.daysLeft;
+    if (snapshot.entries.isNotEmpty) {
+      _entries = _sortedByExpDesc(snapshot.entries);
     }
-  }
+  });
 
   /// Suma EXP al usuario actual y recalcula posiciones.
   void addExp(int amount) {
