@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../widgets/primary_button.dart';
 
 /// Barra de feedback tras comprobar un ejercicio, con el boton continuar.
@@ -20,6 +21,7 @@ class LessonFeedbackBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final Color color = isCorrect ? AppColors.eagerGreen : AppColors.heartPink;
 
     return Container(
@@ -50,7 +52,7 @@ class LessonFeedbackBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        isCorrect ? '¡Correcto!' : 'Respuesta correcta:',
+                        isCorrect ? l10n.correct : l10n.correctAnswer,
                         style: AppTypography.subheading(color: color),
                       ),
                       if (!isCorrect && answerText.isNotEmpty)
@@ -66,7 +68,7 @@ class LessonFeedbackBar extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.s16),
-            PrimaryButton(label: 'Continuar', onPressed: onContinue),
+            PrimaryButton(label: l10n.continueLabel, onPressed: onContinue),
           ],
         ),
       ),

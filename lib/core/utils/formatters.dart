@@ -1,33 +1,24 @@
-/// Formatea un entero con separador de miles (ej. 11696 -> "11,696").
-String formatThousands(int value) {
-  final String digits = value.abs().toString();
-  final StringBuffer buffer = StringBuffer();
-  for (int i = 0; i < digits.length; i++) {
-    if (i > 0 && (digits.length - i) % 3 == 0) {
-      buffer.write(',');
-    }
-    buffer.write(digits[i]);
-  }
-  return value < 0 ? '-$buffer' : buffer.toString();
-}
+import 'package:intl/intl.dart';
 
-const List<String> _monthsEs = <String>[
-  'enero',
-  'febrero',
-  'marzo',
-  'abril',
-  'mayo',
-  'junio',
-  'julio',
-  'agosto',
-  'septiembre',
-  'octubre',
-  'noviembre',
-  'diciembre',
-];
+/// Formatea un entero con separador de miles segun el locale es.
+String formatThousands(int value) =>
+    NumberFormat.decimalPattern('es').format(value);
 
 /// Nombre del mes en espanol (minusculas), ej. "septiembre".
-String monthNameEs(DateTime date) => _monthsEs[date.month - 1];
+String monthNameEs(DateTime date) =>
+    DateFormat.MMMM('es').format(date).toLowerCase();
+
+/// Indice (1-12) del mes a partir de su nombre en espanol, o 0 si no coincide.
+int monthIndexFromName(String monthName) {
+  final String normalized = monthName.toLowerCase();
+  for (int month = 1; month <= 12; month++) {
+    final String candidate = DateFormat.MMMM(
+      'es',
+    ).format(DateTime(2000, month)).toLowerCase();
+    if (candidate == normalized) return month;
+  }
+  return 0;
+}
 
 /// Dias restantes hasta el final del mes de [date] (incluye el dia actual).
 int daysLeftInMonth(DateTime date) {

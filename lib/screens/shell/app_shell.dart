@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/nav_item.dart';
 import '../../providers/challenges_provider.dart';
 import '../../providers/league_provider.dart';
@@ -49,13 +50,37 @@ class _AppShellState extends State<AppShell> {
     context.read<StreakProvider>().load();
   }
 
-  static const List<NavItem> _navItems = <NavItem>[
-    NavItem(icon: Icons.home_rounded, color: AppColors.streakOrange),
-    NavItem(icon: Icons.fitness_center_rounded, color: AppColors.streakOrange),
-    NavItem(icon: Icons.diamond_rounded, color: AppColors.gemBlue),
-    NavItem(icon: Icons.favorite_rounded, color: AppColors.heartPink),
-    NavItem(icon: Icons.emoji_events_rounded, color: AppColors.sparkBlue),
-    NavItem(icon: Icons.more_horiz_rounded, color: AppColors.leaguePurple),
+  List<NavItem> _navItems(AppLocalizations l10n) => <NavItem>[
+    NavItem(
+      icon: Icons.home_rounded,
+      color: AppColors.streakOrange,
+      label: l10n.navHome,
+    ),
+    NavItem(
+      icon: Icons.fitness_center_rounded,
+      color: AppColors.streakOrange,
+      label: l10n.navPractice,
+    ),
+    NavItem(
+      icon: Icons.diamond_rounded,
+      color: AppColors.gemBlue,
+      label: l10n.navGems,
+    ),
+    NavItem(
+      icon: Icons.favorite_rounded,
+      color: AppColors.heartPink,
+      label: l10n.navHearts,
+    ),
+    NavItem(
+      icon: Icons.emoji_events_rounded,
+      color: AppColors.sparkBlue,
+      label: l10n.navLeague,
+    ),
+    NavItem(
+      icon: Icons.more_horiz_rounded,
+      color: AppColors.leaguePurple,
+      label: l10n.navMore,
+    ),
   ];
 
   static const List<Widget> _screens = <Widget>[
@@ -95,7 +120,7 @@ class _AppShellState extends State<AppShell> {
         children: _screens,
       ),
       bottomNavigationBar: AppBottomNav(
-        items: _navItems,
+        items: _navItems(AppLocalizations.of(context)),
         selectedIndex: _selectedIndex,
         onTap: _onNavTap,
       ),

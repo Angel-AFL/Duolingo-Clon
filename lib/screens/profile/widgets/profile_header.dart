@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/avatar_preset.dart';
 import '../../../models/profile_info.dart';
 
@@ -24,6 +25,8 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Container(
       width: double.infinity,
       color: AppColors.profileYellow,
@@ -51,24 +54,18 @@ class ProfileHeader extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: onCustomize,
-                    tooltip: 'Cambiar foto',
+                    tooltip: l10n.changePhoto,
                     icon: const Icon(
                       Icons.checkroom_rounded,
                       color: AppColors.nightInk,
                       size: 26,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.unit),
-                  const Icon(
-                    Icons.settings_rounded,
-                    color: AppColors.nightInk,
-                    size: 26,
-                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.unit),
               Text(
-                'En Súper desde ${profile.superSince}',
+                l10n.superSince(profile.superSince),
                 style: AppTypography.subheading(
                   color: AppColors.nightInk.withValues(alpha: 0.7),
                 ),
@@ -78,6 +75,7 @@ class ProfileHeader extends StatelessWidget {
                 child: _ProfileAvatar(
                   avatarUrl: profile.avatarUrl,
                   isUpdating: isUpdatingAvatar,
+                  semanticLabel: profile.name,
                 ),
               ),
             ],
@@ -89,10 +87,15 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class _ProfileAvatar extends StatelessWidget {
-  const _ProfileAvatar({this.avatarUrl, this.isUpdating = false});
+  const _ProfileAvatar({
+    this.avatarUrl,
+    this.isUpdating = false,
+    this.semanticLabel,
+  });
 
   final String? avatarUrl;
   final bool isUpdating;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +117,7 @@ class _ProfileAvatar extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0x66000000),
+                  color: AppColors.scrim,
                 ),
                 child: Center(
                   child: CircularProgressIndicator(
@@ -138,7 +141,7 @@ class _ProfileAvatar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
               child: Text(
-                'SÚPER',
+                AppLocalizations.of(context).superBadge,
                 style: AppTypography.caption(
                   color: AppColors.paperWhite,
                 ).copyWith(fontStyle: FontStyle.italic),
@@ -166,6 +169,7 @@ class _ProfileAvatar extends StatelessWidget {
       return Image.network(
         url,
         fit: BoxFit.cover,
+        semanticLabel: semanticLabel,
         errorBuilder: (_, _, _) => _placeholder(),
       );
     }
@@ -174,6 +178,7 @@ class _ProfileAvatar extends StatelessWidget {
       return Image.asset(
         url,
         fit: BoxFit.cover,
+        semanticLabel: semanticLabel,
         errorBuilder: (_, _, _) => _placeholder(),
       );
     }

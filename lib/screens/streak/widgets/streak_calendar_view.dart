@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/utils/formatters.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/streak_calendar.dart';
 import '../../../widgets/stat_box.dart';
 
@@ -20,37 +22,11 @@ class StreakCalendarView extends StatelessWidget {
   /// practica para no depender de la sincronizacion con la BD.
   final int streakDays;
 
-  static const List<String> _weekdays = <String>[
-    'D',
-    'L',
-    'Ma',
-    'Mi',
-    'J',
-    'V',
-    'S',
-  ];
-
-  static const List<String> _monthNames = <String>[
-    'enero',
-    'febrero',
-    'marzo',
-    'abril',
-    'mayo',
-    'junio',
-    'julio',
-    'agosto',
-    'septiembre',
-    'octubre',
-    'noviembre',
-    'diciembre',
-  ];
-
-  int get _monthIndex =>
-      _monthNames.indexOf(calendar.monthName.toLowerCase()) + 1;
-
   @override
   Widget build(BuildContext context) {
-    final int monthIndex = _monthIndex;
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final List<String> weekdays = l10n.weekdays.split(',');
+    final int monthIndex = monthIndexFromName(calendar.monthName);
     final DateTime firstDay = DateTime(calendar.year, monthIndex, 1);
     final int daysInMonth = DateTime(calendar.year, monthIndex + 1, 0).day;
     final int leadingBlanks = firstDay.weekday % 7;
@@ -75,7 +51,7 @@ class StreakCalendarView extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: Text(
-                '${calendar.monthName} de ${calendar.year}',
+                l10n.monthYear(calendar.monthName, calendar.year),
                 style: AppTypography.screenTitle(color: AppColors.paperWhite),
               ),
             ),
@@ -95,7 +71,7 @@ class StreakCalendarView extends StatelessWidget {
                 icon: Icons.check_circle_rounded,
                 iconColor: AppColors.streakOrange,
                 value: '$streakDays',
-                label: 'días de práctica',
+                label: l10n.practiceDays,
               ),
             ),
             const SizedBox(width: AppSpacing.s12),
@@ -104,7 +80,7 @@ class StreakCalendarView extends StatelessWidget {
                 icon: Icons.shield_rounded,
                 iconColor: AppColors.sparkBlue,
                 value: '${calendar.freezesUsed}',
-                label: 'Protectores usados',
+                label: l10n.freezesUsed,
               ),
             ),
           ],
@@ -120,7 +96,7 @@ class StreakCalendarView extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  for (final String day in _weekdays)
+                  for (final String day in weekdays)
                     Expanded(
                       child: Text(
                         day,

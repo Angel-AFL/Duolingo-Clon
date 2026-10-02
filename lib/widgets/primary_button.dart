@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
-import '../core/theme/app_spacing.dart';
 import '../core/theme/app_typography.dart';
 
 /// CTA primario del skill: relleno Eager Green, texto blanco en mayusculas,
@@ -20,27 +19,12 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final button = SizedBox(
-      height: 52,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.eagerGreen,
-          foregroundColor: AppColors.paperWhite,
-          disabledBackgroundColor: AppColors.fadedGray,
-          disabledForegroundColor: AppColors.paperWhite,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.standard),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-        ),
-        child: Text(
-          label.toUpperCase(),
-          textAlign: TextAlign.center,
-          style: AppTypography.navLabel(color: AppColors.paperWhite),
-        ),
+    final Widget button = ElevatedButton(
+      onPressed: onPressed,
+      child: Text(
+        label.toUpperCase(),
+        textAlign: TextAlign.center,
+        style: AppTypography.navLabel(color: AppColors.paperWhite),
       ),
     );
 

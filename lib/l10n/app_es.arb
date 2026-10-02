@@ -1,0 +1,174 @@
+{
+  "@@locale": "es",
+
+  "appTitle": "Duolingo Clone",
+
+  "retry": "Reintentar",
+  "cancel": "Cancelar",
+  "loadErrorDefault": "No se pudieron cargar los datos",
+
+  "nameLabel": "Nombre",
+  "emailLabel": "Correo electrónico",
+  "passwordLabel": "Contraseña",
+  "signUp": "Crear cuenta",
+  "signIn": "Iniciar sesión",
+  "haveAccount": "¿Ya tienes cuenta? Inicia sesión",
+  "noAccount": "¿No tienes cuenta? Regístrate",
+
+  "homeLoadError": "No se pudo cargar tu camino",
+
+  "challengesLoadError": "No se pudieron cargar los desafíos",
+  "giveCheer": "Dar toque",
+  "giveGift": "Dar regalo",
+  "dailyChallenges": "Desafíos del día",
+  "hoursLeft": "12H",
+  "emptyChallenges": "No hay desafíos activos por ahora",
+  "challengeOf": "Desafío de {month}",
+  "@challengeOf": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+  "daysLeftShort": "{days} DÍAS",
+  "@daysLeftShort": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "earnPoints": "Gana {target} puntos de desafío",
+  "@earnPoints": {
+    "placeholders": {
+      "target": { "type": "int" }
+    }
+  },
+  "challengeComplete": "¡Desafío completado!",
+  "pointsRemaining": "Te faltan {remaining} puntos",
+  "@pointsRemaining": {
+    "placeholders": {
+      "remaining": { "type": "int" }
+    }
+  },
+
+  "leagueLoadError": "No se pudo cargar la liga",
+
+  "profileLoadError": "No se pudo cargar el perfil",
+  "joinedOn": "{handle} · SE UNIÓ EN {year}",
+  "@joinedOn": {
+    "placeholders": {
+      "handle": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "addFriends": "Agrega amigos",
+  "summary": "Resumen",
+  "friendStreaks": "Rachas entre amigos",
+  "superFamily": "Súper familia",
+  "manage": "Administrar",
+  "courses": "Cursos",
+  "following": "Siguiendo",
+  "followers": "Seguidores",
+  "daysCount": "{count} días",
+  "@daysCount": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "expValue": "{value} EXP",
+  "@expValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "signOut": "Cerrar sesión",
+  "signOutConfirm": "¿Seguro que quieres salir de tu cuenta?",
+  "superSince": "En Súper desde {year}",
+  "@superSince": {
+    "placeholders": {
+      "year": { "type": "int" }
+    }
+  },
+  "superBadge": "SÚPER",
+  "changePhoto": "Cambiar foto",
+
+  "choosePhoto": "Elige tu foto",
+  "gallery": "Galería",
+  "camera": "Cámara",
+  "changePhotoError": "No se pudo cambiar la foto: {error}",
+  "@changePhotoError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "streakLoadError": "No se pudo cargar la racha",
+  "streakDaysTitle": "Días de racha",
+  "personalTab": "PERSONAL",
+  "friendsTab": "AMIGOS",
+  "streakSociety": "SOCIEDAD DE RACHAS EXTENSAS",
+  "daysOfStreak": "días de racha",
+  "perfectStreakPre": "Has mantenido una ",
+  "perfectStreak": "Racha perfecta",
+  "perfectStreakPost": " durante {weeks} semanas. ¡Impresionante!",
+  "@perfectStreakPost": {
+    "placeholders": {
+      "weeks": { "type": "int" }
+    }
+  },
+  "noFriends": "Aún no sigues a nadie",
+  "monthYear": "{month} de {year}",
+  "@monthYear": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "year": { "type": "int" }
+    }
+  },
+  "practiceDays": "días de práctica",
+  "freezesUsed": "Protectores usados",
+  "weekdays": "D,L,Ma,Mi,J,V,S",
+
+  "check": "Comprobar",
+  "correct": "¡Correcto!",
+  "correctAnswer": "Respuesta correcta:",
+  "continueLabel": "Continuar",
+  "lessonComplete": "¡Lección completada!",
+  "lessonCompleteSubtitle": "Sigue así, cada lección te acerca a tu meta.",
+  "totalExp": "EXP TOTAL",
+  "accuracy": "PRECISIÓN",
+  "chooseTranslation": "Elige la traducción correcta",
+  "translateSentence": "Traduce esta oración",
+  "tapWords": "Toca las palabras para formar la oración",
+  "completeSentence": "Completa la oración",
+  "matchPairs": "Empareja las parejas",
+
+  "navHome": "Inicio",
+  "navPractice": "Práctica",
+  "navGems": "Gemas",
+  "navHearts": "Corazones",
+  "navLeague": "Liga",
+  "navMore": "Más",
+  "a11yLessonNode": "Lección {position}",
+  "@a11yLessonNode": {
+    "placeholders": {
+      "position": { "type": "int" }
+    }
+  },
+  "a11yAvatarPreset": "Avatar {index}",
+  "@a11yAvatarPreset": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "a11yStatStreak": "Racha de {days} días",
+  "@a11yStatStreak": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "a11yFriendStreak": "Racha con {name}: {days} días",
+  "@a11yFriendStreak": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "days": { "type": "int" }
+    }
+  }
+}

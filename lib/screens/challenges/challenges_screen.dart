@@ -6,10 +6,13 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/app_constants.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/daily_challenge.dart';
 import '../../providers/challenges_provider.dart';
+import '../../widgets/error_retry_view.dart';
 import '../../widgets/section_label.dart';
 import 'widgets/challenges_header.dart';
+import 'widgets/challenges_skeleton.dart';
 import 'widgets/daily_challenge_tile.dart';
 
 /// Pantalla de desafios (boceto `desafios.jpeg`, tema oscuro).
@@ -19,6 +22,7 @@ class ChallengesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ChallengesProvider challenges = context.watch<ChallengesProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
     final DateTime now = DateTime.now();
 
     return Column(
@@ -29,69 +33,117 @@ class ChallengesScreen extends StatelessWidget {
           points: challenges.points,
           pointsTarget: challenges.pointsTarget,
         ),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.s16,
-              AppSpacing.s16,
-              AppSpacing.s16,
-              AppSpacing.s24,
+        Expanded(child: _body(context, challenges, l10n)),
+      ],
+    );
+  }
+
+  Widget _body(
+    BuildContext context,
+    ChallengesProvider challenges,
+    AppLocalizations l10n,
+  ) {
+    if (!challenges.hasLoaded) {
+      if (challenges.hasError) {
+        return ErrorRetryView(
+          title: l10n.challengesLoadError,
+          message: challenges.error,
+          onRetry: challenges.load,
+        );
+      }
+      if (challenges.isLoading) return const ChallengesSkeleton();
+    }
+
+    final List<DailyChallenge> dailyChallenges = challenges.challenges;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.s16,
+        AppSpacing.s16,
+        AppSpacing.s16,
+        AppSpacing.s24,
+      ),
+      children: <Widget>[
+        _PartnerRow(
+          name: AppConstants.challengePartner,
+          exp: AppConstants.challengePartnerExp,
+        ),
+        const SizedBox(height: AppSpacing.s16),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: _ActionButton(
+                emoji: '👋',
+                label: l10n.giveCheer,
+                onPressed: challenges.giveCheer,
+              ),
             ),
+            const SizedBox(width: AppSpacing.s12),
+            Expanded(
+              child: _ActionButton(
+                emoji: '🎁',
+                label: l10n.giveGift,
+                onPressed: challenges.giveGift,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.s24),
+        const Divider(color: AppColors.darkBorder, height: 1),
+        const SizedBox(height: AppSpacing.s24),
+        SectionLabel(
+          label: l10n.dailyChallenges,
+          trailing: Row(
             children: <Widget>[
-              _PartnerRow(
-                name: AppConstants.challengePartner,
-                exp: AppConstants.challengePartnerExp,
+              const Icon(
+                Icons.schedule_rounded,
+                size: 16,
+                color: AppColors.pencilGray,
               ),
-              const SizedBox(height: AppSpacing.s16),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: _ActionButton(
-                      emoji: '👋',
-                      label: 'Dar toque',
-                      onPressed: challenges.giveCheer,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s12),
-                  Expanded(
-                    child: _ActionButton(
-                      emoji: '🎁',
-                      label: 'Dar regalo',
-                      onPressed: challenges.giveGift,
-                    ),
-                  ),
-                ],
+              const SizedBox(width: AppSpacing.unit),
+              Text(
+                l10n.hoursLeft,
+                style: AppTypography.label(color: AppColors.pencilGray),
               ),
-              const SizedBox(height: AppSpacing.s24),
-              const Divider(color: AppColors.darkBorder, height: 1),
-              const SizedBox(height: AppSpacing.s24),
-              SectionLabel(
-                label: 'Desafíos del día',
-                trailing: Row(
-                  children: <Widget>[
-                    const Icon(
-                      Icons.schedule_rounded,
-                      size: 16,
-                      color: AppColors.pencilGray,
-                    ),
-                    const SizedBox(width: AppSpacing.unit),
-                    Text(
-                      '12H',
-                      style: AppTypography.label(color: AppColors.pencilGray),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.s8),
-              for (final DailyChallenge challenge in challenges.challenges)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.s16),
-                  child: DailyChallengeTile(challenge: challenge),
-                ),
             ],
           ),
         ),
+        const SizedBox(height: AppSpacing.s8),
+        if (dailyChallenges.isEmpty)
+          const _EmptyChallenges()
+        else
+          for (final DailyChallenge challenge in dailyChallenges)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+              child: DailyChallengeTile(challenge: challenge),
+            ),
       ],
+    );
+  }
+}
+
+class _EmptyChallenges extends StatelessWidget {
+  const _EmptyChallenges();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s32),
+      child: Column(
+        children: <Widget>[
+          const Icon(
+            Icons.emoji_events_outlined,
+            color: AppColors.pencilGray,
+            size: 40,
+          ),
+          const SizedBox(height: AppSpacing.s12),
+          Text(
+            AppLocalizations.of(context).emptyChallenges,
+            textAlign: TextAlign.center,
+            style: AppTypography.body(color: AppColors.pencilGray),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -136,32 +188,22 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.darkBorder, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.standard),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(emoji, style: const TextStyle(fontSize: 20)),
-            const SizedBox(width: AppSpacing.s8),
-            Flexible(
-              child: Text(
-                label.toUpperCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.label(color: AppColors.paperWhite),
-              ),
+    return OutlinedButton(
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(emoji, style: const TextStyle(fontSize: 20)),
+          const SizedBox(width: AppSpacing.s8),
+          Flexible(
+            child: Text(
+              label.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.label(color: AppColors.paperWhite),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

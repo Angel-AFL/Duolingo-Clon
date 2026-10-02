@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'package:duolingo_clon/app.dart';
+import 'package:duolingo_clon/core/theme/app_theme.dart';
+import 'package:duolingo_clon/l10n/app_localizations.dart';
 import 'package:duolingo_clon/core/utils/formatters.dart';
 import 'package:duolingo_clon/data/repositories/learning_path_repository.dart';
 import 'package:duolingo_clon/models/lesson_exercise.dart';
@@ -51,7 +54,10 @@ Widget _screen(Widget child) => MultiProvider(
   providers: _providers(),
   child: MaterialApp(
     themeMode: ThemeMode.dark,
-    darkTheme: ThemeData.dark(),
+    darkTheme: AppTheme.dark,
+    locale: const Locale('es'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     routes: <String, WidgetBuilder>{
       AppRoutes.streak: (BuildContext context) => const StreakScreen(),
       AppRoutes.lesson: (BuildContext context) => const LessonScreen(),
@@ -127,9 +133,20 @@ class _FakePathRepository implements LearningPathRepository {
   Future<void> saveNodes(List<LessonNode> nodes) async => _nodes = nodes;
 }
 
+/// Repositorio de camino que siempre falla, para probar el estado de error.
+class _ThrowingPathRepository implements LearningPathRepository {
+  @override
+  Future<List<LessonNode>> fetchNodes() async =>
+      throw StateError('sin conexión');
+
+  @override
+  Future<void> saveNodes(List<LessonNode> nodes) async {}
+}
+
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
     GoogleFonts.config.allowRuntimeFetching = false;
+    await initializeDateFormatting('es');
   });
 
   testWidgets('login autentica y navega al home', (WidgetTester tester) async {
@@ -585,5 +602,87 @@ void main() {
 
     expect(profile.profile.totalExp, profileExpBefore + 10);
     expect(league.currentUser.exp, leagueExpBefore + 10);
+  });
+
+  test('load expone hasError cuando el repositorio falla', () async {
+    final LearningPathProvider path = LearningPathProvider(
+      repository: _ThrowingPathRepository(),
+    );
+
+    await path.load();
+
+    expect(path.hasError, isTrue);
+    expect(path.error, isNotNull);
+    expect(path.hasLoaded, isFalse);
+    expect(path.isLoading, isFalse);
+  });
+
+  testWidgets('una carga fallida muestra error y reintento', (
+    WidgetTester tester,
+  ) async {
+    final List<ChangeNotifierProvider> providers = _providers()
+      ..removeWhere(
+        (ChangeNotifierProvider p) =>
+            p is ChangeNotifierProvider<LearningPathProvider>,
+      );
+    providers.add(
+      ChangeNotifierProvider<LearningPathProvider>(
+        create: (_) =>
+            LearningPathProvider(repository: _ThrowingPathRepository()),
+      ),
+    );
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: providers,
+        child: MaterialApp(
+          themeMode: ThemeMode.dark,
+          darkTheme: AppTheme.dark,
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(body: HomeScreen()),
+        ),
+      ),
+    );
+
+    final BuildContext context = tester.element(find.byType(HomeScreen));
+    final LearningPathProvider path = Provider.of<LearningPathProvider>(
+      context,
+      listen: false,
+    );
+    await path.load();
+    await tester.pumpAndSettle();
+
+    expect(find.text('No se pudo cargar tu camino'), findsOneWidget);
+    expect(find.text('REINTENTAR'), findsOneWidget);
+  });
+
+  testWidgets('cerrar sesion vuelve al login', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    await _login(tester);
+
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBottomNav),
+        matching: find.byIcon(Icons.more_horiz_rounded),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('CERRAR SESIÓN'));
+    await tester.tap(find.text('CERRAR SESIÓN'));
+    await tester.pumpAndSettle();
+
+    // El dialogo de confirmacion usa el mismo texto en la accion.
+    await tester.tap(find.text('CERRAR SESIÓN').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('INICIAR SESIÓN'), findsOneWidget);
   });
 }

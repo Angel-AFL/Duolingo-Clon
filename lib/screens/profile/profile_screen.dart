@@ -5,13 +5,16 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/friend_streak.dart';
 import '../../models/profile_info.dart';
 import '../../models/user_stats.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/error_retry_view.dart';
 import '../../widgets/section_label.dart';
 import 'widgets/avatar_picker_sheet.dart';
 import 'widgets/friend_streak_item.dart';
@@ -25,6 +28,44 @@ class ProfileScreen extends StatelessWidget {
     Navigator.of(context).pushNamed(AppRoutes.streak);
   }
 
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final AuthProvider auth = context.read<AuthProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final bool confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (BuildContext dialogContext) => AlertDialog(
+            backgroundColor: AppColors.darkSurface,
+            title: Text(
+              l10n.signOut,
+              style: AppTypography.subheading(color: AppColors.paperWhite),
+            ),
+            content: Text(
+              l10n.signOutConfirm,
+              style: AppTypography.body(color: AppColors.pencilGray),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: Text(
+                  l10n.cancel.toUpperCase(),
+                  style: AppTypography.label(color: AppColors.pencilGray),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: Text(
+                  l10n.signOut.toUpperCase(),
+                  style: AppTypography.label(color: AppColors.heartPink),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (confirmed) await auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     final UserStats stats = context.watch<UserStatsProvider>().stats;
@@ -33,10 +74,12 @@ class ProfileScreen extends StatelessWidget {
     final List<FriendStreak> friendStreaks = context
         .watch<StreakProvider>()
         .friendStreaks;
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     if (!profileProvider.hasLoaded) {
       if (profileProvider.hasError) {
-        return _ProfileError(
+        return ErrorRetryView(
+          title: l10n.profileLoadError,
           message: profileProvider.error,
           onRetry: profileProvider.load,
         );
@@ -70,7 +113,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               children: <Widget>[
                 Text(
-                  '${profile.handle} · SE UNIÓ EN ${profile.joinedYear}',
+                  l10n.joinedOn(profile.handle, profile.joinedYear),
                   style: AppTypography.label(color: AppColors.pencilGray),
                 ),
                 const SizedBox(height: AppSpacing.s24),
@@ -79,28 +122,13 @@ class ProfileScreen extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: SizedBox(
-                        height: 52,
-                        child: OutlinedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.person_add_alt_1_rounded),
-                          label: Text(
-                            'AGREGA AMIGOS',
-                            style: AppTypography.label(
-                              color: AppColors.paperWhite,
-                            ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.paperWhite,
-                            side: const BorderSide(
-                              color: AppColors.darkBorder,
-                              width: 2,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.standard,
-                              ),
-                            ),
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.person_add_alt_1_rounded),
+                        label: Text(
+                          l10n.addFriends.toUpperCase(),
+                          style: AppTypography.label(
+                            color: AppColors.paperWhite,
                           ),
                         ),
                       ),
@@ -108,20 +136,11 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(width: AppSpacing.s12),
                     SizedBox(
                       width: 52,
-                      height: 52,
                       child: OutlinedButton(
                         onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          foregroundColor: AppColors.paperWhite,
-                          side: const BorderSide(
-                            color: AppColors.darkBorder,
-                            width: 2,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.standard,
-                            ),
+                        style: const ButtonStyle(
+                          padding: WidgetStatePropertyAll<EdgeInsets>(
+                            EdgeInsets.zero,
                           ),
                         ),
                         child: const Icon(Icons.qr_code_2_rounded),
@@ -130,11 +149,11 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.s24),
-                const SectionLabel(label: 'Resumen'),
+                SectionLabel(label: l10n.summary),
                 const SizedBox(height: AppSpacing.s16),
                 _Summary(stats: stats, profile: profile),
                 const SizedBox(height: AppSpacing.s24),
-                const SectionLabel(label: 'Rachas entre amigos'),
+                SectionLabel(label: l10n.friendStreaks),
                 const SizedBox(height: AppSpacing.s16),
                 SizedBox(
                   height: 108,
@@ -154,12 +173,26 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.s24),
                 SectionLabel(
-                  label: 'Súper familia',
+                  label: l10n.superFamily,
                   trailing: TextButton(
                     onPressed: () {},
                     child: Text(
-                      'ADMINISTRAR',
+                      l10n.manage.toUpperCase(),
                       style: AppTypography.label(color: AppColors.sparkBlue),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s24),
+                OutlinedButton.icon(
+                  onPressed: () => _confirmSignOut(context),
+                  icon: const Icon(Icons.logout_rounded),
+                  label: Text(
+                    l10n.signOut.toUpperCase(),
+                    style: AppTypography.label(color: AppColors.heartPink),
+                  ),
+                  style: const ButtonStyle(
+                    foregroundColor: WidgetStatePropertyAll<Color>(
+                      AppColors.heartPink,
                     ),
                   ),
                 ),
@@ -172,67 +205,6 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class _ProfileError extends StatelessWidget {
-  const _ProfileError({required this.onRetry, this.message});
-
-  final VoidCallback onRetry;
-  final String? message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.s24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const Icon(
-              Icons.cloud_off_rounded,
-              color: AppColors.pencilGray,
-              size: 48,
-            ),
-            const SizedBox(height: AppSpacing.s16),
-            Text(
-              'No se pudo cargar el perfil',
-              textAlign: TextAlign.center,
-              style: AppTypography.subheading(color: AppColors.paperWhite),
-            ),
-            if (message != null) ...<Widget>[
-              const SizedBox(height: AppSpacing.s8),
-              Text(
-                message!,
-                textAlign: TextAlign.center,
-                style: AppTypography.caption(color: AppColors.pencilGray),
-              ),
-            ],
-            const SizedBox(height: AppSpacing.s24),
-            SizedBox(
-              height: 52,
-              child: OutlinedButton(
-                onPressed: onRetry,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.paperWhite,
-                  side: const BorderSide(
-                    color: AppColors.darkBorder,
-                    width: 2,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.standard),
-                  ),
-                ),
-                child: Text(
-                  'REINTENTAR',
-                  style: AppTypography.label(color: AppColors.paperWhite),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _SocialStats extends StatelessWidget {
   const _SocialStats({required this.profile});
 
@@ -240,6 +212,8 @@ class _SocialStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -255,16 +229,19 @@ class _SocialStats extends StatelessWidget {
                 ),
               ],
             ),
-            label: 'Cursos',
+            label: l10n.courses,
           ),
         ),
         Expanded(
-          child: _SocialStat(value: '${profile.following}', label: 'Siguiendo'),
+          child: _SocialStat(
+            value: '${profile.following}',
+            label: l10n.following,
+          ),
         ),
         Expanded(
           child: _SocialStat(
             value: '${profile.followers}',
-            label: 'Seguidores',
+            label: l10n.followers,
           ),
         ),
       ],
@@ -305,6 +282,8 @@ class _Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return Column(
       children: <Widget>[
         Row(
@@ -313,7 +292,7 @@ class _Summary extends StatelessWidget {
               child: _SummaryItem(
                 icon: Icons.local_fire_department_rounded,
                 color: AppColors.streakOrange,
-                label: '${formatThousands(stats.streakDays)} días',
+                label: l10n.daysCount(formatThousands(stats.streakDays)),
               ),
             ),
             Expanded(
@@ -341,7 +320,7 @@ class _Summary extends StatelessWidget {
               child: _SummaryItem(
                 icon: Icons.bolt_rounded,
                 color: AppColors.podiumGold,
-                label: '${formatThousands(profile.totalExp)} EXP',
+                label: l10n.expValue(formatThousands(profile.totalExp)),
               ),
             ),
           ],

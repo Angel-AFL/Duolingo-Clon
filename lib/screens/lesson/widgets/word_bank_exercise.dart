@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/lesson_exercise.dart';
 import '../../../providers/lesson_provider.dart';
 
@@ -28,7 +29,7 @@ class WordBankExercise extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.s16),
       children: <Widget>[
         Text(
-          'Traduce esta oración',
+          AppLocalizations.of(context).translateSentence,
           style: AppTypography.label(color: AppColors.pencilGray),
         ),
         const SizedBox(height: AppSpacing.s12),
@@ -49,7 +50,7 @@ class WordBankExercise extends StatelessWidget {
               ? Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    'Toca las palabras para formar la oración',
+                    AppLocalizations.of(context).tapWords,
                     style: AppTypography.caption(color: AppColors.pencilGray),
                   ),
                 )

@@ -57,22 +57,30 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.standard),
-      child: Container(
-        width: 56,
-        height: 44,
-        decoration: selected
-            ? BoxDecoration(
-                border: Border.all(color: item.color, width: 2),
-                borderRadius: BorderRadius.circular(AppRadius.standard),
-              )
-            : null,
-        child: Icon(
-          item.icon,
-          size: 28,
-          color: selected ? item.color : item.color.withValues(alpha: 0.55),
+    return Semantics(
+      label: item.label,
+      button: true,
+      selected: selected,
+      child: Tooltip(
+        message: item.label,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.standard),
+          child: Container(
+            width: 56,
+            height: 44,
+            decoration: selected
+                ? BoxDecoration(
+                    border: Border.all(color: item.color, width: 2),
+                    borderRadius: BorderRadius.circular(AppRadius.standard),
+                  )
+                : null,
+            child: Icon(
+              item.icon,
+              size: 28,
+              color: selected ? item.color : item.color.withValues(alpha: 0.55),
+            ),
+          ),
         ),
       ),
     );

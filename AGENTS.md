@@ -19,6 +19,8 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   still works via `MockAuthRepository`.
 - Apply DB schema: paste `supabase/migrations/0001_initial_schema.sql` into the
   Supabase dashboard SQL editor (no local CLI required).
+- Regenerate localizations after editing `lib/l10n/app_es.arb`: `flutter gen-l10n`
+  (runs automatically on `pub get`/build because of `generate: true`).
 - Format: `dart format lib test` (Dart 3.12 formatter rewrites the whole tree;
   expect unrelated formatting-only diffs)
 
@@ -60,6 +62,7 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   `supabase/migrations/0002_profile_avatar.sql` for the column, bucket and RLS.
 - Auth: `AuthProvider` wraps `AuthRepository`; `AuthGate` in `app.dart` reacts to
   `isAuthenticated`. `LoginScreen` handles email/password sign-in and sign-up.
+  Cerrar sesion se dispara desde el boton al final del perfil (con confirmacion).
 - Routes are string constants in `lib/routes/app_routes.dart`. Only `streak` and
   `lesson` are named routes; login/shell are chosen by `AuthGate`. `lesson`
   receives the node position via `ModalRoute.settings.arguments`.
@@ -77,6 +80,22 @@ state. Models in `lib/models/` carry `fromJson`/`toJson` for the DB rows.
   `0005_normalize_lesson_nodes.sql` si alguna cuenta tiene el camino invertido, y
   `0006_reset_lesson_progress.sql` si quedo sin nodo activo (todo `completed`).
   `0007_challenge_metrics.sql` agrega `daily_challenges.metric` y ajusta el seed.
+- Estado de carga/error: los providers usan el mixin `LoadableProvider`
+  (`lib/providers/loadable_provider.dart`) que expone `isLoading`/`hasLoaded`/
+  `hasError`/`error` (y `hasWriteError`/`writeError` para guardados). Las
+  pantallas muestran skeletons (`lib/widgets/skeleton.dart`) durante la primera
+  carga y `ErrorRetryView` (`lib/widgets/error_retry_view.dart`) si falla.
+- Escrituras de EXP: `profile` y `league` usan RPC atomicos
+  (`increment_profile_exp` / `increment_league_exp`); aplicar
+  `supabase/migrations/0008_atomic_exp.sql`. Los providers actualizan la UI de
+  forma optimista y revierten + exponen `writeError` si el guardado falla.
+- i18n: todos los textos de UI viven en `lib/l10n/app_es.arb` y se leen con
+  `AppLocalizations.of(context)`; fechas/numeros con `intl`
+  (`initializeDateFormatting('es')` en `main.dart`). No hardcodear strings.
+- Tema: los estilos de componentes (botones, inputs, sheets, dialogs...) se
+  centralizan en `lib/core/theme/app_theme.dart`; los widgets no repiten estilos.
+- Accesibilidad: controles solo-icono y `GestureDetector` llevan
+  `Semantics`/`Tooltip` (nav, nodos, presets de avatar, chips, rachas).
 - `AppShell` maps bottom-nav indices to screens: 0 Home, 1 Desafios, 4 Liga,
   5 Perfil. Indices 2/3 have no sketch and are no-ops. Add new tabs there.
 - Adding a provider means registering it in `lib/main.dart` **and** the test

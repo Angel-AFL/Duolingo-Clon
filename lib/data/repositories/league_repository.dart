@@ -20,7 +20,8 @@ class LeagueSnapshot {
 abstract interface class LeagueRepository {
   Future<LeagueSnapshot> fetchLeague();
 
-  Future<void> updateCurrentUserExp(int exp);
+  /// Suma EXP al usuario actual de forma atomica.
+  Future<void> addExp(int amount);
 }
 
 class SupabaseLeagueRepository implements LeagueRepository {
@@ -59,12 +60,15 @@ class SupabaseLeagueRepository implements LeagueRepository {
   }
 
   @override
-  Future<void> updateCurrentUserExp(int exp) async {
-    final String userId = _client.auth.currentUser!.id;
-    await _client
-        .from('league_members')
-        .update(<String, dynamic>{'exp': exp})
-        .eq('user_id', userId);
+  Future<void> addExp(int amount) async {
+    final User? user = _client.auth.currentUser;
+    if (user == null) {
+      throw StateError('No hay sesión activa para actualizar la liga.');
+    }
+    await _client.rpc(
+      'increment_league_exp',
+      params: <String, dynamic>{'amount': amount},
+    );
   }
 }
 
@@ -77,5 +81,5 @@ class MockLeagueRepository implements LeagueRepository {
   );
 
   @override
-  Future<void> updateCurrentUserExp(int exp) async {}
+  Future<void> addExp(int amount) async {}
 }

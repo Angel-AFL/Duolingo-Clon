@@ -11,12 +11,16 @@ class StatChip extends StatelessWidget {
     required this.value,
     this.valueColor,
     this.onTap,
+    this.semanticLabel,
   });
 
   final Widget leading;
   final String value;
   final Color? valueColor;
   final VoidCallback? onTap;
+
+  /// Descripcion para lectores de pantalla (ej. "Racha de 12 dias").
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +33,16 @@ class StatChip extends StatelessWidget {
       ],
     );
 
-    if (onTap == null) return content;
+    final Widget semantic = semanticLabel == null
+        ? content
+        : Semantics(label: semanticLabel, child: content);
+
+    if (onTap == null) return semantic;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.standard),
-      child: content,
+      child: semantic,
     );
   }
 }

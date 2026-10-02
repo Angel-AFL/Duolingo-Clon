@@ -15,8 +15,8 @@ abstract interface class ProfileRepository {
   /// Persiste la referencia del avatar (URL, asset o `preset:<id>`).
   Future<ProfileInfo> updateAvatarUrl(String avatarUrl);
 
-  /// Suma EXP al total del perfil y devuelve el perfil actualizado.
-  Future<ProfileInfo> addExp(int amount);
+  /// Suma EXP al total del perfil de forma atomica.
+  Future<void> addExp(int amount);
 }
 
 class SupabaseProfileRepository implements ProfileRepository {
@@ -87,18 +87,15 @@ class SupabaseProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<ProfileInfo> addExp(int amount) async {
+  Future<void> addExp(int amount) async {
     final User? user = _client.auth.currentUser;
     if (user == null) {
       throw StateError('No hay sesión activa para actualizar el perfil.');
     }
-    final ProfileInfo current = await fetchProfile();
-    final int totalExp = current.totalExp + amount;
-    await _client
-        .from('profiles')
-        .update(<String, dynamic>{'total_exp': totalExp})
-        .eq('id', user.id);
-    return current.copyWith(totalExp: totalExp);
+    await _client.rpc(
+      'increment_profile_exp',
+      params: <String, dynamic>{'amount': amount},
+    );
   }
 
   ProfileInfo _defaultProfile(User user) {
@@ -154,8 +151,7 @@ class MockProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<ProfileInfo> addExp(int amount) async {
+  Future<void> addExp(int amount) async {
     _profile = _profile.copyWith(totalExp: _profile.totalExp + amount);
-    return _profile;
   }
 }

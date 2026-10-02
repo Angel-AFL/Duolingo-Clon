@@ -3,40 +3,32 @@ import 'package:flutter/foundation.dart';
 import '../data/mock_data.dart';
 import '../data/repositories/learning_path_repository.dart';
 import '../models/lesson_node.dart';
+import 'loadable_provider.dart';
 
 /// Estado del camino de aprendizaje.
-class LearningPathProvider extends ChangeNotifier {
+class LearningPathProvider extends ChangeNotifier with LoadableProvider {
   LearningPathProvider({LearningPathRepository? repository})
     : _repository = repository ?? MockLearningPathRepository();
 
   final LearningPathRepository _repository;
 
   List<LessonNode> _nodes = List<LessonNode>.of(MockData.lessonPath);
-  bool _isLoading = false;
 
   List<LessonNode> get nodes => List<LessonNode>.unmodifiable(_nodes);
-  bool get isLoading => _isLoading;
 
   int get activeIndex =>
       _nodes.indexWhere((LessonNode n) => n.status == LessonNodeStatus.active);
 
-  Future<void> load() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final List<LessonNode> nodes = await _repository.fetchNodes();
-      if (nodes.isNotEmpty) {
-        _nodes = List<LessonNode>.of(nodes)
-          ..sort(
-            (LessonNode a, LessonNode b) => a.position.compareTo(b.position),
-          );
-        _ensureActive();
-      }
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  Future<void> load() => runLoad(() async {
+    final List<LessonNode> nodes = await _repository.fetchNodes();
+    if (nodes.isNotEmpty) {
+      _nodes = List<LessonNode>.of(nodes)
+        ..sort(
+          (LessonNode a, LessonNode b) => a.position.compareTo(b.position),
+        );
+      _ensureActive();
     }
-  }
+  });
 
   /// Si no hay nodo activo y quedan pendientes, activa el primero.
   ///

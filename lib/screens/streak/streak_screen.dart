@@ -5,12 +5,15 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/friend_streak.dart';
 import '../../models/streak_calendar.dart';
 import '../../providers/streak_provider.dart';
 import '../../providers/user_stats_provider.dart';
 import '../../widgets/avatar_circle.dart';
+import '../../widgets/error_retry_view.dart';
 import 'widgets/streak_calendar_view.dart';
+import 'widgets/streak_skeleton.dart';
 
 /// Pantalla de detalle de racha (boceto `rachas.jpeg`).
 ///
@@ -20,6 +23,9 @@ class StreakScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final StreakProvider streak = context.watch<StreakProvider>();
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -28,31 +34,44 @@ class StreakScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               const _TopBar(),
-              const TabBar(
+              TabBar(
                 labelColor: AppColors.sparkBlue,
                 unselectedLabelColor: AppColors.pencilGray,
                 indicatorColor: AppColors.sparkBlue,
                 indicatorWeight: 3,
                 dividerColor: AppColors.darkBorder,
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1,
                   fontSize: 14,
                 ),
                 tabs: <Widget>[
-                  Tab(text: 'PERSONAL'),
-                  Tab(text: 'AMIGOS'),
+                  Tab(text: l10n.personalTab),
+                  Tab(text: l10n.friendsTab),
                 ],
               ),
-              const Expanded(
-                child: TabBarView(
-                  children: <Widget>[_PersonalTab(), _FriendsTab()],
-                ),
-              ),
+              Expanded(child: _body(context, streak)),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _body(BuildContext context, StreakProvider streak) {
+    if (!streak.hasLoaded) {
+      if (streak.hasError) {
+        return ErrorRetryView(
+          title: AppLocalizations.of(context).streakLoadError,
+          message: streak.error,
+          onRetry: streak.load,
+        );
+      }
+      if (streak.isLoading) return const StreakSkeleton();
+    }
+
+    return const TabBarView(
+      children: <Widget>[_PersonalTab(), _FriendsTab()],
     );
   }
 }
@@ -75,7 +94,7 @@ class _TopBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Días de racha',
+              AppLocalizations.of(context).streakDaysTitle,
               textAlign: TextAlign.center,
               style: AppTypography.subheading(color: AppColors.paperWhite),
             ),
@@ -97,6 +116,7 @@ class _PersonalTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final int streakDays = context.watch<UserStatsProvider>().stats.streakDays;
     final StreakCalendar calendar = context.watch<StreakProvider>().calendar;
+    final AppLocalizations l10n = AppLocalizations.of(context);
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.s16),
@@ -112,7 +132,7 @@ class _PersonalTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.standard),
             ),
             child: Text(
-              'SOCIEDAD DE RACHAS EXTENSAS',
+              l10n.streakSociety,
               style: AppTypography.label(color: AppColors.pencilGray),
             ),
           ),
@@ -131,7 +151,7 @@ class _PersonalTab extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'días de racha',
+                    l10n.daysOfStreak,
                     style: AppTypography.headingSm(color: AppColors.pencilGray),
                   ),
                 ],
@@ -164,16 +184,15 @@ class _PersonalTab extends StatelessWidget {
                   TextSpan(
                     style: AppTypography.body(color: AppColors.paperWhite),
                     children: <TextSpan>[
-                      const TextSpan(text: 'Has mantenido una '),
+                      TextSpan(text: l10n.perfectStreakPre),
                       TextSpan(
-                        text: 'Racha perfecta',
+                        text: l10n.perfectStreak,
                         style: AppTypography.body(
                           color: AppColors.streakDeep,
                         ).copyWith(fontWeight: FontWeight.w800),
                       ),
                       TextSpan(
-                        text:
-                            ' durante ${calendar.perfectWeeks} semanas. ¡Impresionante!',
+                        text: l10n.perfectStreakPost(calendar.perfectWeeks),
                       ),
                     ],
                   ),
@@ -197,6 +216,30 @@ class _FriendsTab extends StatelessWidget {
     final List<FriendStreak> friendStreaks = context
         .watch<StreakProvider>()
         .friendStreaks;
+
+    if (friendStreaks.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.s24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Icon(
+                Icons.people_outline_rounded,
+                color: AppColors.pencilGray,
+                size: 40,
+              ),
+              const SizedBox(height: AppSpacing.s12),
+              Text(
+                AppLocalizations.of(context).noFriends,
+                textAlign: TextAlign.center,
+                style: AppTypography.body(color: AppColors.pencilGray),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.s16),
